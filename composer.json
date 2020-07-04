@@ -1,0 +1,31 @@
+{
+    "name": "gxz/cus_declare_service",
+    "type": "library",
+    "keywords": [
+        "cus-declare-service",
+        "cus-declare",
+        "declare-service"
+    ],
+    "authors": [
+        {
+            "name": "littleTrue",
+            "email": "644812368@qq.com",
+            "homepage": "https://www.jianshu.com/u/8775ddf16c8b"
+        }
+    ],
+    "license": "Apache-2.0",
+    "require": {
+        "php": ">=5.6",
+        "adbario/php-dot-notation": "^2.0",
+        "pimple/pimple": "v2.1.1",
+        "ext-json": "*"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "customs\\CustomsDeclareClient\\": "src/client/",
+            "customs\\CustomsDeclareService\\": "src/service/"
+        }
+    }
+}
