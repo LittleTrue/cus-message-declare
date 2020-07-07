@@ -26,12 +26,12 @@ class OrderCrossImportService
      * @throws ClientError
      * @throws \Exception
      */
-    public function declare(array $infos)
+    public function declare(array $declareConfig, array $declareParams)
     {
-        if (empty($infos)) {
+        if (empty($declareConfig) || empty($declareParams)) {
             throw new ClientError('参数缺失', 1000001);
         }
 
-        return $this->_orderCrossImportClient->declare($infos);
+        return $this->_orderCrossImportClient->declare($declareConfig, $declareParams);
     }
 }

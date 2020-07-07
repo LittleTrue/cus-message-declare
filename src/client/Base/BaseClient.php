@@ -47,12 +47,14 @@ class BaseClient
     }
 
     /**
-     * 获取报文流水号.
-     * @return string
+     * 浮点数比较规则.
+     * @return int
      */
-    protected function generateMessageId()
+    public function floatCmp($f1, $f2, $precision = 10)
     {
-        return date('ymd') . substr(substr(microtime(), 2, 6)
-        * time(), 2, 6) . mt_rand(1000, 9999);
+        $e = pow(10, $precision);
+        $i1 = intval($f1 * $e);
+        $i2 = intval($f2 * $e);
+        return $i1 == $i2;
     }
 }
