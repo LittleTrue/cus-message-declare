@@ -44,17 +44,18 @@ class Client extends BaseClient
         $this->credentialValidate->setRule(
             [
                 'MessageId' => 'require|max:36',
+
                 'EBPEntNo'  => 'require|max:50',
-
                 'EBPEntName' => 'require|max:100',
-                'EBEntNo'    => 'require|max:18',
 
+                'EBEntNo'    => 'require|max:18',
                 'EBEntName'   => 'require|max:100',
+
                 'DeclEntNo'   => 'require|max:18',
                 'DeclEntName' => 'require|max:100',
 
                 'DeclEntDxpid' => 'require|max:30',
-                'opType'       => 'require|max:1',
+                'OpType'       => 'require|max:1',
             ]
         );
 
@@ -70,11 +71,11 @@ class Client extends BaseClient
 
         $Order = $this->dom->createElement('ceb:Order');
 
-        if (isset($declareConfig['optype'])) {
-            if (2 == $declareConfig['optype']) {
+        if (isset($declareConfig['OpType'])) {
+            if (2 == $declareConfig['OpType']) {
                 $this->sendTime = date('YmdHis', (time() + 1000));
             }
-            $this->opType = $declareConfig['optype'];
+            $this->opType = $declareConfig['OpType'];
         } else {
             $this->sendTime = date('YmdHis', time());
             $this->opType   = 1;
@@ -96,10 +97,10 @@ class Client extends BaseClient
             'ceb:orderType' => 'I',
             'ceb:orderNo'   => $orderInfo['EntOrderNo'],
 
-            'ceb:ebpCode' => $orderInfo['EBPEntNo'],
-            'ceb:ebpName' => $orderInfo['EBPEntName'],
-            'ceb:ebcCode' => $orderInfo['EBEntNo'],
-            'ceb:ebcName' => $orderInfo['EBEntName'],
+            'ceb:ebpCode' => $declareConfig['EBPEntNo'],
+            'ceb:ebpName' => $declareConfig['EBPEntName'],
+            'ceb:ebcCode' => $declareConfig['EBEntNo'],
+            'ceb:ebcName' => $declareConfig['EBEntName'],
 
             'ceb:goodsValue'       => $orderInfo['OrderGoodTotal'],
             'ceb:freight'          => $orderInfo['Freight'],
@@ -187,12 +188,6 @@ class Client extends BaseClient
     {
         $this->credentialValidate->setRule([
             'ceb:orderNo' => 'require|max:60',
-
-            'ceb:ebpCode' => 'require|max:18',
-            'ceb:ebpName' => 'require|max:100',
-
-            'ceb:ebcCode' => 'require|max:18',
-            'ceb:ebcName' => 'require|max:100',
 
             'ceb:buyerRegNo' => 'require|max:60',
 
