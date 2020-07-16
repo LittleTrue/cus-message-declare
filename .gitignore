@@ -3,5 +3,4 @@
 vendor/
 *.lock
 .DS_Store
-.php_cs
 index.php
