@@ -26,12 +26,12 @@ class TransportBillImportService
      * @throws ClientError
      * @throws \Exception
      */
-    public function transportDeclare(array $transportBase, array $transportParams)
+    public function declare(array $transportBase, array $transportParams)
     {
-        // if (empty($declareConfig) || empty($declareParams)) {
-        //     throw new ClientError('参数缺失', 1000001);
-        // }
+        if (empty($transportBase) || empty($transportParams)) {
+            throw new ClientError('参数缺失', 1000001);
+        }
 
-        return $this->_transportBillImport->transportDeclare($transportBase, $transportParams);
+        return $this->_transportBillImport->declare($transportBase, $transportParams);
     }
 }

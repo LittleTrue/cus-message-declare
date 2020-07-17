@@ -37,7 +37,7 @@ class Client extends BaseClient
     /**
      * 运单申报.
      */
-    public function transportDeclare($transportBase = [], $transportParams = [])
+    public function declare($transportBase, $transportParams)
     {
         $rule = [
             'DeclEntNo'    => 'require|max:18',
@@ -56,7 +56,7 @@ class Client extends BaseClient
         }
 
         $this->sendTime = date('YmdHis', time());
-        $this->opType   = $transportBase['op_type'];
+        $this->opType   = $transportBase['OpType'];
 
         //根节点生成--父类
         $this->setRootNode($transportBase['MessageId']);
