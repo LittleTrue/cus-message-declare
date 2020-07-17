@@ -47,6 +47,10 @@ class Client extends BaseClient
             'MessageId' => 'require|max:36',
 
             'OpType' => 'require|max:1',
+
+            'logisticsCode' => 'require|max:20',
+            'logisticsName' => 'require',
+            'logisticsNo'   => 'require|max:60',
         ];
 
         $this->credentialValidate->setRule($rule);
@@ -76,9 +80,9 @@ class Client extends BaseClient
                 'ceb:appTime'   => $this->sendTime,
                 'ceb:appStatus' => 2,
 
-                'ceb:logisticsCode' => $value['logistics_code'],
-                'ceb:logisticsName' => $value['logistics_name'],
-                'ceb:logisticsNo'   => $value['logistics_no'],
+                'ceb:logisticsCode' => $transportBase['logisticsCode'],
+                'ceb:logisticsName' => $transportBase['logisticsName'],
+                'ceb:logisticsNo'   => $transportBase['logisticsNo'],
 
                 'ceb:billNo'             => empty($value['bill_no']) ? '' : $value['bill_no'],
                 'ceb:freight'            => $value['freight'],
