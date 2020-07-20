@@ -99,11 +99,10 @@ class Client extends BaseClient
 
             $this->dom = $this->createEle($LogisticsHeadEle, $this->dom, $LogisticsHead);
 
-            $LogisticsHeadEle_arr[] = $LogisticsHeadEle;
+            // $LogisticsHeadEle_arr[] = $LogisticsHeadEle;
+            //验证数据
+            $this->checkInfo($LogisticsHeadEle);
         }
-
-        //验证数据
-        $this->checkInfo($LogisticsHeadEle_arr);
 
         //统一传输实体结点实现--父类
         $BaseTransferEle = [
@@ -142,7 +141,7 @@ class Client extends BaseClient
 
         $this->credentialValidate->setRule($rules);
 
-        if (!$this->credentialValidate->check($checklistInfo)) {
+        if (!$this->credentialValidate->check($transportParams)) {
             throw new ClientError('运单数据: ' . $this->credentialValidate->getError());
         }
 
