@@ -48,9 +48,9 @@ class Client extends BaseClient
 
             'OpType' => 'require|max:1',
 
-            'logisticsCode' => 'require|max:20',
-            'logisticsName' => 'require',
-            'logisticsNo'   => 'require|max:60',
+            'EHSEntNo'   => 'require|max:18',
+            'EHSEntName' => 'require|max:100',
+
         ];
 
         $this->credentialValidate->setRule($rule);
@@ -80,9 +80,9 @@ class Client extends BaseClient
                 'ceb:appTime'   => $this->sendTime,
                 'ceb:appStatus' => 2,
 
-                'ceb:logisticsCode' => $transportBase['logisticsCode'],
-                'ceb:logisticsName' => $transportBase['logisticsName'],
-                'ceb:logisticsNo'   => $transportBase['logisticsNo'],
+                'ceb:logisticsCode' => $transportBase['EHSEntNo'],
+                'ceb:logisticsName' => $transportBase['EHSEntName'],
+                'ceb:logisticsNo'   => $value['EntWaybillNo'],
 
                 'ceb:billNo'             => empty($value['bill_no']) ? '' : $value['bill_no'],
                 'ceb:freight'            => $value['freight'],
@@ -121,7 +121,7 @@ class Client extends BaseClient
     /**
      * 定义验证器来校验清单和清单商品信息.
      */
-    public function checkInfo($transportParams)
+    public function checkInfo($LogisticsHeadEle)
     {
         $rules = [
             'ceb:logisticsCode' => 'require|max:20',
@@ -141,7 +141,7 @@ class Client extends BaseClient
 
         $this->credentialValidate->setRule($rules);
 
-        if (!$this->credentialValidate->check($transportParams)) {
+        if (!$this->credentialValidate->check($LogisticsHeadEle)) {
             throw new ClientError('运单数据: ' . $this->credentialValidate->getError());
         }
 

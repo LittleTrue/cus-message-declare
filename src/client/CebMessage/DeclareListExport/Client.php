@@ -54,7 +54,7 @@ class Client extends BaseClient
 
             'EHSEntNo'     => 'require|max:18',
             'EHSEntName'   => 'require|max:100',
-            'EntWaybillNo' => 'require|max:80',
+            // 'EntWaybillNo' => 'require|max:80',
 
             // 'ceb:logisticsNo'   => $checklistInfo['EntWaybillNo'],
             // 'ceb:logisticsCode' => $declareConfig['EHSEntNo'],
@@ -129,7 +129,7 @@ class Client extends BaseClient
 
                 'ceb:logisticsCode' => $declareConfig['EHSEntNo'],
                 'ceb:logisticsName' => $declareConfig['EHSEntName'],
-                'ceb:logisticsNo'   => $declareConfig['EntWaybillNo'],
+                'ceb:logisticsNo'   => $head['EntWaybillNo'],
 
                 'ceb:copNo' => $head['EntEListNo'],
 
@@ -240,7 +240,7 @@ class Client extends BaseClient
             'ceb:orderNo' => 'require|max:60',
 
             'ceb:copNo' => 'require|max:30',
-
+            'ceb:logisticsNo'=> 'require|max:80',
             'ceb:portCode' => 'require|max:4',
 
             'ceb:statisticsFlag' => 'require|max:1',

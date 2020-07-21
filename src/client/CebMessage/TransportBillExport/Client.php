@@ -48,10 +48,8 @@ class Client extends BaseClient
 
             'OpType' => 'require|max:1',
 
-            'logisticsCode' => 'require|max:20',
-            'logisticsName' => 'require',
-            'logisticsNo'   => 'require|max:60',
-
+            'EHSEntNo'   => 'require|max:18',
+            'EHSEntName' => 'require|max:100',
             // 'EBPEntNo'  => 'require|max:50',
             // 'EBPEntName' => 'require|max:100',
         ];
@@ -80,9 +78,9 @@ class Client extends BaseClient
                 'ceb:appTime'   => $this->sendTime,
                 'ceb:appStatus' => 2,
 
-                'ceb:logisticsCode' => $declareConfig['logisticsCode'],
-                'ceb:logisticsName' => $declareConfig['logisticsName'],
-                'ceb:logisticsNo'   => $declareConfig['logisticsNo'],
+                'ceb:logisticsCode' => $declareConfig['EHSEntNo'],
+                'ceb:logisticsName' => $declareConfig['EHSEntName'],
+                'ceb:logisticsNo'   => $value['EntWaybillNo'],
 
                 'ceb:freight'      => $value['freight'],
                 'ceb:insuredFee'   => $value['insured_fee'],
@@ -119,12 +117,12 @@ class Client extends BaseClient
     /**
      * 定义验证器来校验清单和清单商品信息.
      */
-    public function checkInfo($LogisticsEle_arr)
+    public function checkInfo($LogisticsEle)
     {
         $rules = [
             'ceb:logisticsCode' => 'require|max:20',
-            'ceb:logisticsName' => 'require',
-            'ceb:logisticsNo'   => 'require|max:60',
+            'ceb:logisticsName' => 'require|max:100',
+            'ceb:logisticsNo'   => 'require|max:80',
 
             'ceb:freight'      => 'require|number',
             'ceb:insuredFee'   => 'require|number',
@@ -136,7 +134,7 @@ class Client extends BaseClient
 
         $this->credentialValidate->setRule($rules);
 
-        if (!$this->credentialValidate->check($LogisticsEle_arr)) {
+        if (!$this->credentialValidate->check($LogisticsEle)) {
             throw new ClientError('运单数据: ' . $this->credentialValidate->getError());
         }
 

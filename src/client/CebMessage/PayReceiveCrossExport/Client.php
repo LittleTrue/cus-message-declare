@@ -118,7 +118,7 @@ class Client extends BaseClient
     /**
      * 定义验证器来校验收款单数据.
      */
-    public function checkInfo($LogisticsEle_arr)
+    public function checkInfo($ReceiptsEle)
     {
         $rules = [
             'ceb:guid'           => 'require',
@@ -133,7 +133,7 @@ class Client extends BaseClient
 
         $this->credentialValidate->setRule($rules);
 
-        if (!$this->credentialValidate->check($LogisticsEle_arr)) {
+        if (!$this->credentialValidate->check($ReceiptsEle)) {
             throw new ClientError('运单数据: ' . $this->credentialValidate->getError());
         }
 
