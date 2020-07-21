@@ -21,6 +21,7 @@ class Application extends Container
         CebMessage\TransportBillImport\ServiceProvider::class,
         CebMessage\ElectronicOrderExport\ServiceProvider::class,
         CebMessage\TransportBillExport\ServiceProvider::class,
+        CebMessage\DeclareListExport\ServiceProvider::class,
         ChinaWindowMessage\OrderExpressImport\ServiceProvider::class,
         GzWindowKjMessage\ChecklistCross\ServiceProvider::class,
         GzWindowKjMessage\GoodsCross\ServiceProvider::class,
