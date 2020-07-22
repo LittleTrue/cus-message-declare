@@ -1,11 +1,10 @@
 <?php
 
-namespace customs\CustomsDeclareClient\CebMessage\ArrivalExport;
+namespace customs\CustomsDeclareClient\CebMessage\WayBillExport;
 
 use customs\CustomsDeclareClient\Application;
 use customs\CustomsDeclareClient\Base\BaseClient;
 use customs\CustomsDeclareClient\Base\CebMessageBuild;
-use customs\CustomsDeclareClient\Base\Exceptions\ClientError;
 
 /**
  * 客户端.
@@ -15,7 +14,7 @@ class Client extends BaseClient
     use CebMessageBuild;
 
     //本报文编号
-    public $messageType = 'CEB507Message';
+    public $messageType = 'CEB607Message';
 
     /**
      * @var Application
@@ -28,9 +27,6 @@ class Client extends BaseClient
     //报文发送时间
     private $sendTime;
 
-    //进出口标志
-    private $ieFlag = 'E';
-
     public function __construct(Application $app)
     {
         parent::__construct($app);
@@ -38,7 +34,7 @@ class Client extends BaseClient
     }
 
     /**
-     * 出口运抵单.
+     * 出口清单总分单.
      */
     public function declare(array $declareConfig, array $declareParams)
     {
@@ -55,9 +51,6 @@ class Client extends BaseClient
 
             'EHSEntNo'   => 'require|max:18',
             'EHSEntName' => 'require|max:100',
-
-            'OperatorCode' => 'require|max:100',
-            'OperatorName' => 'require|max:100',
         ];
 
         $this->credentialValidate->setRule($rule);
@@ -78,28 +71,30 @@ class Client extends BaseClient
             $list = $value['list'];
 
             //一个报文有多个申报订单
-            $Arrival = $this->dom->createElement('ceb:Arrival');
-            $this->nodeLink['root_node']->appendchild($Arrival);
-            $this->nodeLink['Arrival'] = $Arrival;
+            $WayBill = $this->dom->createElement('ceb:WayBill');
+            $this->nodeLink['root_node']->appendchild($WayBill);
+            $this->nodeLink['WayBill'] = $WayBill;
 
             //一个清单一个清单头
-            $ArrivalHead = $this->dom->createElement('ceb:ArrivalHead');
-            $this->nodeLink['Arrival']->appendchild($ArrivalHead);
+            $WayBillHead = $this->dom->createElement('ceb:WayBillHead');
+            $this->nodeLink['WayBill']->appendchild($WayBillHead);
 
-            $ArrivalHeadEle = [
+            $WayBillHeadEle = [
                 'ceb:guid'           => $declareConfig['MessageId'],
                 'ceb:appType'        => $this->opType,
                 'ceb:appTime'        => $this->sendTime,
                 'ceb:appStatus'      => '2',
                 'ceb:customsCode'    => $declareConfig['CustomsCode'],
                 'ceb:copNo'          => $head['EntEListNo'],
-                'ceb:operatorCode'   => $declareConfig['OperatorCode'],
-                'ceb:operatorName'   => $declareConfig['OperatorName'],
+                'ceb:agentCode'      => $declareConfig['DeclEntNo'],
+                'ceb:agentName'      => $declareConfig['DeclEntName'],
                 'ceb:loctNo'         => empty($head['LoctNo']) ? '' : $head['LoctNo'],
-                'ceb:ieFlag'         => $this->ieFlag,
                 'ceb:trafMode'       => $head['TrafMode'],
-                'ceb:billNo'         => empty($head['BillNo']) ? '' : $head['BillNo'],
-                'ceb:domesticTrafNo' => $this->ieFlag,
+                'ceb:trafName'       => $head['TrafName'],
+                'ceb:voyageNo'       => $head['VoyageNo'],
+                'ceb:billNo'         => $head['BillNo'],
+                'ceb:domesticTrafNo' => empty($head['DomesticTrafNo']) ? '' : $head['DomesticTrafNo'],
+                'ceb:grossWeight'    => $head['GrossWeight'],
                 'ceb:logisticsCode'  => $declareConfig['EHSEntNo'],
                 'ceb:logisticsName'  => $declareConfig['EHSEntName'],
                 'ceb:msgCount'       => $head['MsgCount'],
@@ -107,26 +102,26 @@ class Client extends BaseClient
                 'ceb:note'           => empty($head['note']) ? '' : $head['note'],
             ];
 
-            $this->dom = $this->createEle($ArrivalHeadEle, $this->dom, $ArrivalHead);
+            $this->dom = $this->createEle($WayBillHeadEle, $this->dom, $WayBillHead);
 
             foreach ($list as $key => $value) {
-                $ArrivalList = $this->dom->createElement('ceb:ArrivalList');
-                $this->nodeLink['Arrival']->appendchild($ArrivalList);
+                $WayBillList = $this->dom->createElement('ceb:WayBillList');
+                $this->nodeLink['WayBill']->appendchild($WayBillList);
 
-                $ArrivalListEle = [
+                $WayBillListEle = [
                     'ceb:gnum'           => $key + 1,
-                    'ceb:logisticsNo'    => $value['EntWaybillNo'],
                     'ceb:totalPackageNo' => empty($value['TotalPackageNo']) ? '' : $value['TotalPackageNo'],
+                    'ceb:logisticsNo'    => $value['EntWaybillNo'],
                     'ceb:note'           => empty($value['note']) ? '' : $value['note'],
                 ];
 
-                $this->dom = $this->createEle($ArrivalListEle, $this->dom, $ArrivalList);
+                $this->dom = $this->createEle($WayBillListEle, $this->dom, $WayBillList);
 
-                $ArrivalListEle_arr[] = $ArrivalListEle;
+                $WayBillListEle_arr[] = $WayBillListEle;
             }
 
             //验证数据
-            $this->checkInfo($ArrivalHeadEle, $ArrivalListEle_arr);
+            $this->checkInfo($WayBillHeadEle, $WayBillListEle_arr);
         }
 
         //统一传输实体结点实现--父类
@@ -146,17 +141,17 @@ class Client extends BaseClient
     /**
      * 定义验证器.
      */
-    public function checkInfo($ArrivalHeadEle, $ArrivalListEle_arr)
+    public function checkInfo($WayBillHeadEle, $WayBillListEle_arr)
     {
         $head_rules = [
-            'ceb:copNo'        => 'require|max:20',
-            'ceb:operatorCode' => 'require|max:18',
-            'ceb:operatorName' => 'require|max:100',
-
-            'ceb:trafMode' => 'require|max:20',
-
-            'ceb:msgCount' => 'require|max:20',
-            'ceb:msgSeqNo' => 'require|max:20',
+            'ceb:copNo'       => 'require|max:20',
+            'ceb:trafMode'    => 'require|max:20',
+            'ceb:trafName'    => 'require|max:20',
+            'ceb:voyageNo'    => 'require|max:20',
+            'ceb:billNo'      => 'require|max:20',
+            'ceb:grossWeight' => 'require|max:20',
+            'ceb:msgCount'    => 'require|max:20',
+            'ceb:msgSeqNo'    => 'require|max:20',
         ];
 
         $list_rules = [
@@ -166,13 +161,13 @@ class Client extends BaseClient
 
         $this->credentialValidate->setRule($head_rules);
 
-        if (!$this->credentialValidate->check($ArrivalHeadEle)) {
+        if (!$this->credentialValidate->check($WayBillHeadEle)) {
             throw new ClientError('报文清单数据: ' . $this->credentialValidate->getError());
         }
 
         $this->credentialValidate->setRule($list_rules);
 
-        foreach ($ArrivalListEle_arr as $key => $value) {
+        foreach ($WayBillListEle_arr as $key => $value) {
             if (!$this->credentialValidate->check($value)) {
                 throw new ClientError('报文清单数据: ' . $this->credentialValidate->getError());
             }
