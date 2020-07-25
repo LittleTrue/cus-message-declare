@@ -21,7 +21,7 @@ class Client extends BaseClient
      *
      * @throws ClientError
      */
-    public function declare(array $infos, string $gz)
+    public function generateXmlPost(array $infos, string $gz)
     {
         //TODO
     }

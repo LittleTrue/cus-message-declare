@@ -45,7 +45,7 @@ class Client extends BaseClient
      *
      * @throws ClientError
      */
-    public function declare(array $declareConfig, array $declareParams)
+    public function generateXmlPost(array $declareConfig, array $declareParams)
     {
         $rule = [
             //修改

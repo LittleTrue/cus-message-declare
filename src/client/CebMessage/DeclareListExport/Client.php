@@ -42,7 +42,7 @@ class Client extends BaseClient
     /**
      * 出口申报清单.
      */
-    public function declare(array $declareConfig, array $declareParams)
+    public function generateXmlPost(array $declareConfig, array $declareParams)
     {
         $rule = [
             //修改

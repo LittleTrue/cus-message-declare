@@ -26,12 +26,12 @@ class GoodsCrossService
      * @throws ClientError
      * @throws \Exception
      */
-    public function declare(array $declareConfig, array $declareParams)
+    public function generateXmlPost(array $declareConfig, array $declareParams)
     {
         if (empty($declareConfig) || empty($declareParams)) {
             throw new ClientError('参数缺失', 1000001);
         }
 
-        return $this->_goodsCrossClient->declare($declareConfig, $declareParams);
+        return $this->_goodsCrossClient->generateXmlPost($declareConfig, $declareParams);
     }
 }

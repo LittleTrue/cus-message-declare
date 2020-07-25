@@ -26,12 +26,12 @@ class TransportBillImportService
      * @throws ClientError
      * @throws \Exception
      */
-    public function declare(array $transportBase, array $transportParams)
+    public function generateXmlPost(array $transportBase, array $transportParams)
     {
         if (empty($transportBase) || empty($transportParams)) {
             throw new ClientError('参数缺失', 1000001);
         }
 
-        return $this->_transportBillImport->declare($transportBase, $transportParams);
+        return $this->_transportBillImport->generateXmlPost($transportBase, $transportParams);
     }
 }

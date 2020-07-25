@@ -39,7 +39,7 @@ class Client extends BaseClient
      *
      * @throws ClientError
      */
-    public function declare($declareConfig, $declareParams)
+    public function generateXmlPost($declareConfig, $declareParams)
     {
         $rule = [
             'MessageId' => 'require|max:36',

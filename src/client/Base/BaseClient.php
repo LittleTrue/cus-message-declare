@@ -33,7 +33,7 @@ class BaseClient
      * 获取特定位数时间戳.
      * @return int
      */
-    public function getTimestamp(int $digits = 10)
+    public function getTimestamp($digits = 10)
     {
         $digits = $digits > 10 ? $digits : 10;
 

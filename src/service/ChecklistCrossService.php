@@ -26,12 +26,12 @@ class ChecklistCrossService
      * @throws ClientError
      * @throws \Exception
      */
-    public function declare(array $infos)
+    public function generateXmlPost(array $infos)
     {
         if (empty($infos)) {
             throw new ClientError('参数缺失', 1000001);
         }
 
-        return $this->_checklistCrossClient->declare($infos);
+        return $this->_checklistCrossClient->generateXmlPost($infos);
     }
 }

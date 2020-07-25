@@ -37,7 +37,7 @@ class Client extends BaseClient
     /**
      * 出口离境单.
      */
-    public function declare(array $declareConfig, array $declareParams)
+    public function generateXmlPost(array $declareConfig, array $declareParams)
     {
         $rule = [
             'DeclEntNo'    => 'require|max:18',

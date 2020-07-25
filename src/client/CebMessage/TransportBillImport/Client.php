@@ -37,7 +37,7 @@ class Client extends BaseClient
     /**
      * 运单申报.
      */
-    public function declare($transportBase, $transportParams)
+    public function generateXmlPost($transportBase, $transportParams)
     {
         $rule = [
             'DeclEntNo'    => 'require|max:18',

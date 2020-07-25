@@ -26,12 +26,12 @@ class InboundCrossService
      * @throws ClientError
      * @throws \Exception
      */
-    public function declare(array $infos)
+    public function generateXmlPost(array $infos)
     {
         if (empty($infos)) {
             throw new ClientError('参数缺失', 1000001);
         }
 
-        return $this->_inboundCrossClient->declare($infos);
+        return $this->_inboundCrossClient->generateXmlPost($infos);
     }
 }

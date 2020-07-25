@@ -37,7 +37,7 @@ class Client extends BaseClient
     /**
      * 撤销申请单.
      */
-    public function declare($declareConfig, $declareParams)
+    public function generateXmlPost($declareConfig, $declareParams)
     {
         $rule = [
             'MessageId' => 'require|max:36',
