@@ -40,8 +40,6 @@ class Client extends BaseClient
       
         $objDSig->sign($objKey, $doc->documentElement);
     
-        var_dump($doc->saveXML());
-        die();
-        // return $doc->saveHTML();
+        return $doc->saveXML();
     }
 }
