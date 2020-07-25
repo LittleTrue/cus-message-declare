@@ -25,7 +25,8 @@
     "autoload": {
         "psr-4": {
             "customs\\CustomsDeclareClient\\": "src/client/",
-            "customs\\CustomsDeclareService\\": "src/service/"
+            "customs\\CustomsDeclareService\\": "src/service/",
+            "customs\\": "src/"
         }
     }
 }

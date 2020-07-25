@@ -6,7 +6,7 @@ use customs\CustomsDeclareClient\Application;
 use customs\CustomsDeclareClient\Base\Exceptions\ClientError;
 
 /**
- * 海关直连总署 - CEB报文 - 撤销申请单.
+ * 海关直连总署 - CEB报文 - 出口撤销申请单.
  */
 class CancelDeclareExportService
 {
