@@ -33,6 +33,7 @@ class Application extends Container
         GzWindowKjMessage\InboundCross\ServiceProvider::class,
         GzWindowKjMessage\OrderCross\ServiceProvider::class,
         GzWindowKjMessage\GoodsLoadCross\ServiceProvider::class,
+        SignMessage\Rsa\ServiceProvider::class,
     ];
 
     /**
