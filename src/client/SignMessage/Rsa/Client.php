@@ -4,8 +4,6 @@ namespace customs\CustomsDeclareClient\SignMessage\Rsa;
 
 use customs\CustomsDeclareClient\Application;
 use customs\CustomsDeclareClient\Base\BaseClient;
-use customs\CustomsDeclareClient\SignMessage\Rsa\XMLSecurityDSig;
-use customs\CustomsDeclareClient\SignMessage\Rsa\XMLSecurityKey;
 
 /**
  * 客户端.
@@ -18,11 +16,11 @@ class Client extends BaseClient
     }
 
     /**
-     * 报文加签
+     * 报文加签.
      */
-    public function sign($key,$xml)
+    public function sign($key, $xml)
     {
-        $doc = new \DOMDocument();
+        $doc               = new \DOMDocument();
         $doc->formatOutput = true;
         $doc->loadXML($xml);
         $objDSig = new XMLSecurityDSig('ds');
@@ -37,9 +35,9 @@ class Client extends BaseClient
         $objKey = new XMLSecurityKey(XMLSecurityKey::RSA_SHA1, ['type' => 'private']);
         // $private_path = $this->keyFolder;
         $objKey->loadKey($key, false);
-      
+
         $objDSig->sign($objKey, $doc->documentElement);
-    
+
         return $doc->saveXML();
     }
 }
