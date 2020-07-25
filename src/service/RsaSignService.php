@@ -26,7 +26,7 @@ class RsaSignService
      * @throws ClientError
      * @throws \Exception
      */
-    public function sign(string $key, string $xml)
+    public function sign($key, $xml)
     {
         if (empty($key) || empty($xml)) {
             throw new ClientError('参数缺失', 1000001);
