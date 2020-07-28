@@ -34,4 +34,12 @@ class DeclareListExportService
 
         return $this->_declareListExport->generateXmlPost($declareConfig, $declareParams);
     }
+
+    /**
+     * 生成Http报文
+     */
+    public function genarteDoc($messageType, $xml, $base)
+    {
+        return $this->_declareListExport->genarteDoc($messageType, $xml, $base);
+    }
 }

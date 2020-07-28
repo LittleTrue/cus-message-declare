@@ -34,4 +34,12 @@ class TransportBillExportService
 
         return $this->_transportBillExport->generateXmlPost($declareConfig, $declareParams);
     }
+
+    /**
+     * 生成Http报文
+     */
+    public function genarteDoc($messageType, $xml, $base)
+    {
+        return $this->_transportBillExport->genarteDoc($messageType, $xml, $base);
+    }
 }

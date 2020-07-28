@@ -34,4 +34,12 @@ class SummaryBillExportService
 
         return $this->_summaryBillExport->generateXmlPost($declareConfig, $declareParams);
     }
+
+    /**
+     * 生成Http报文
+     */
+    public function genarteDoc($messageType, $xml, $base)
+    {
+        return $this->_summaryBillExport->genarteDoc($messageType, $xml, $base);
+    }
 }

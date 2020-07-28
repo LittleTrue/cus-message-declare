@@ -34,4 +34,12 @@ class CancelDeclareExportService
 
         return $this->_cancelDeclareExport->generateXmlPost($declareConfig, $declareParams);
     }
+
+    /**
+     * 生成Http报文
+     */
+    public function genarteDoc($messageType, $xml, $base)
+    {
+        return $this->_cancelDeclareExport->genarteDoc($messageType, $xml, $base);
+    }
 }

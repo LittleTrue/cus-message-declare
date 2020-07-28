@@ -34,4 +34,12 @@ class WayBillExportService
 
         return $this->_wayBillExport->generateXmlPost($declareConfig, $declareParams);
     }
+
+    /**
+     * 生成Http报文
+     */
+    public function genarteDoc($messageType, $xml, $base)
+    {
+        return $this->_wayBillExport->genarteDoc($messageType, $xml, $base);
+    }
 }

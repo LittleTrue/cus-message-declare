@@ -34,4 +34,12 @@ class ArrivalExportService
 
         return $this->_arrivalExport->generateXmlPost($declareConfig, $declareParams);
     }
+
+    /**
+     * 生成Http报文
+     */
+    public function genarteDoc($messageType, $xml, $base)
+    {
+        return $this->_arrivalExport->genarteDoc($messageType, $xml, $base);
+    }
 }
