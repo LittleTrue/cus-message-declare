@@ -11,13 +11,24 @@ use customs\CustomsDeclareClient\Base\Exceptions\ClientError;
 class InboundCrossService
 {
     /**
-     * @var BankPurchase
+     * @var InboundCross
      */
     private $_inboundCrossClient;
 
     public function __construct(Application $app)
     {
         $this->_inboundCrossClient = $app['inbound_cross'];
+    }
+
+    /**
+     * 获取对应服务的报文类型messageType.
+     *
+     * @throws ClientError
+     * @throws \Exception
+     */
+    public function getMessageType()
+    {
+        return $this->_inboundCrossClient->messageType;
     }
 
     /**

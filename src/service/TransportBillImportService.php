@@ -11,13 +11,24 @@ use customs\CustomsDeclareClient\Base\Exceptions\ClientError;
 class TransportBillImportService
 {
     /**
-     * @var BankPurchase
+     * @var TransportBillImport
      */
     private $_transportBillImport;
 
     public function __construct(Application $app)
     {
         $this->_transportBillImport = $app['transport_bill_import'];
+    }
+
+    /**
+     * 获取对应服务的报文类型messageType.
+     *
+     * @throws ClientError
+     * @throws \Exception
+     */
+    public function getMessageType()
+    {
+        return $this->_transportBillImport->messageType;
     }
 
     /**

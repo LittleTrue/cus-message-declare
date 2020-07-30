@@ -16,7 +16,7 @@ class Client extends BaseClient
     }
 
     /**
-     * 报文加签.
+     * 报文RSA加签.
      */
     public function sign($key, $xml)
     {

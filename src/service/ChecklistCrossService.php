@@ -11,13 +11,24 @@ use customs\CustomsDeclareClient\Base\Exceptions\ClientError;
 class ChecklistCrossService
 {
     /**
-     * @var BankPurchase
+     * @var ChecklistCross
      */
     private $_checklistCrossClient;
 
     public function __construct(Application $app)
     {
         $this->_checklistCrossClient = $app['checklist_cross'];
+    }
+
+    /**
+     * 获取对应服务的报文类型messageType.
+     *
+     * @throws ClientError
+     * @throws \Exception
+     */
+    public function getMessageType()
+    {
+        return $this->_checklistCrossClient->messageType;
     }
 
     /**

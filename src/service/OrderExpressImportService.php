@@ -11,13 +11,24 @@ use customs\CustomsDeclareClient\Base\Exceptions\ClientError;
 class OrderExpressImportService
 {
     /**
-     * @var BankPurchase
+     * @var OrderExpressImport
      */
     private $_orderExpressImportClient;
 
     public function __construct(Application $app)
     {
         $this->_orderExpressImportClient = $app['order_express_import'];
+    }
+
+    /**
+     * 获取对应服务的报文类型messageType.
+     *
+     * @throws ClientError
+     * @throws \Exception
+     */
+    public function getMessageType()
+    {
+        return $this->_orderExpressImportClient->messageType;
     }
 
     /**

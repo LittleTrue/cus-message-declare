@@ -11,13 +11,30 @@ use customs\CustomsDeclareClient\Base\Exceptions\ClientError;
 class ArrivalExportService
 {
     /**
-     * @var BankPurchase
+     * @var ArrivalExport
      */
     private $_arrivalExport;
 
+    /**
+     * @var HttpMessageDeclare
+     */
+    private $_httpMessageDeclareClient;
+
     public function __construct(Application $app)
     {
-        $this->_arrivalExport = $app['arrival_export'];
+        $this->_arrivalExport            = $app['arrival_export'];
+        $this->_httpMessageDeclareClient = $app['http_message_declare'];
+    }
+
+    /**
+     * 获取对应服务的报文类型messageType.
+     *
+     * @throws ClientError
+     * @throws \Exception
+     */
+    public function getMessageType()
+    {
+        return $this->_arrivalExport->messageType;
     }
 
     /**
@@ -36,10 +53,20 @@ class ArrivalExportService
     }
 
     /**
-     * 生成Http报文
+     * 生成按照单一窗口HTTP申报通路封装的报文.
      */
-    public function genarteDoc($messageType, $xml, $base)
+    public function generateHttpDoc(array $declareConfig, array $declareParams, array $httpBase, $key = '')
     {
-        return $this->_arrivalExport->genarteDoc($messageType, $xml, $base);
+        if (empty($declareConfig) || empty($declareParams)) {
+            throw new ClientError('参数缺失', 1000001);
+        }
+
+        if (empty($httpBase)) {
+            throw new ClientError('参数缺失', 1000001);
+        }
+
+        $xml_data = $this->_arrivalExport->generateXmlPost($declareConfig, $declareParams);
+
+        return $this->_httpMessageDeclareClient->generateHttpDoc($this->_arrivalExport->messageType, $xml_data, $httpBase, $key);
     }
 }

@@ -11,13 +11,30 @@ use customs\CustomsDeclareClient\Base\Exceptions\ClientError;
 class DepartureOrderExportService
 {
     /**
-     * @var BankPurchase
+     * @var DepartureOrderExport
      */
     private $_departureOrderExport;
 
+    /**
+     * @var HttpMessageDeclare
+     */
+    private $_httpMessageDeclareClient;
+
     public function __construct(Application $app)
     {
-        $this->_departureOrderExport = $app['departure_order_export'];
+        $this->_departureOrderExport     = $app['departure_order_export'];
+        $this->_httpMessageDeclareClient = $app['http_message_declare'];
+    }
+
+    /**
+     * 获取对应服务的报文类型messageType.
+     *
+     * @throws ClientError
+     * @throws \Exception
+     */
+    public function getMessageType()
+    {
+        return $this->_departureOrderExport->messageType;
     }
 
     /**
@@ -36,10 +53,20 @@ class DepartureOrderExportService
     }
 
     /**
-     * 生成Http报文
+     * 生成按照单一窗口HTTP申报通路封装的报文.
      */
-    public function genarteDoc($messageType, $xml, $base)
+    public function generateHttpDoc(array $declareConfig, array $declareParams, array $httpBase, $key = '')
     {
-        return $this->_departureOrderExport->genarteDoc($messageType, $xml, $base);
+        if (empty($declareConfig) || empty($declareParams)) {
+            throw new ClientError('参数缺失', 1000001);
+        }
+
+        if (empty($httpBase)) {
+            throw new ClientError('参数缺失', 1000001);
+        }
+
+        $xml_data = $this->_departureOrderExport->generateXmlPost($declareConfig, $declareParams);
+
+        return $this->_httpMessageDeclareClient->generateHttpDoc($this->_departureOrderExport->messageType, $xml_data, $httpBase, $key);
     }
 }

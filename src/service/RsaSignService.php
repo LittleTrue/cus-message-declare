@@ -11,7 +11,7 @@ use customs\CustomsDeclareClient\Base\Exceptions\ClientError;
 class RsaSignService
 {
     /**
-     * @ Rsa Client
+     * @var RsaSign
      */
     private $_rsaClient;
 
@@ -21,7 +21,7 @@ class RsaSignService
     }
 
     /**
-     * 报文加签.
+     * 报文RSA加签.
      *
      * @throws ClientError
      * @throws \Exception
