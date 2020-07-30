@@ -154,7 +154,7 @@ class Client extends BaseClient
                 'ceb:price'        => $vv['RegPrice'],
                 'ceb:totalPrice'   => round($vv['RegPrice'] * $vv['GoodsNumber'], 2),
                 'ceb:currency'     => $this->currency,
-                'ceb:country'      => $this->currency,
+                'ceb:country'      => $vv['OriginCountry'],
                 'ceb:note'         => '',
             ];
 
