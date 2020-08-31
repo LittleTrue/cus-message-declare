@@ -48,10 +48,10 @@ class Client extends BaseClient
 
             'OpType' => 'require|max:1',
 
-            'EBPEntNo' => 'require|max:50',
+            'EBPEntNo'   => 'require|max:50',
             'EBPEntName' => 'require|max:100',
-            'EBEntNo' => 'require|max:18',
-            'EBEntName' => 'require|max:100',
+            'EBEntNo'    => 'require|max:18',
+            'EBEntName'  => 'require|max:100',
         ];
 
         $this->credentialValidate->setRule($rule);
@@ -84,8 +84,8 @@ class Client extends BaseClient
                 'ceb:guid'      => $declareConfig['MessageId'],
                 'ceb:appType'   => $this->opType,
                 'ceb:appTime'   => $this->sendTime,
-                'ceb:appStatus' => 2,
-                'ceb:orderType' => 'I',
+                'ceb:appStatus' => $declareConfig['appStatus'],
+                'ceb:orderType' => 'E',
                 'ceb:orderNo'   => $order_head['EntOrderNo'],
 
                 'ceb:ebpCode' => $declareConfig['EBPEntNo'],
@@ -127,7 +127,7 @@ class Client extends BaseClient
             }
 
             //验证数据
-            $this->checkOrderInfo($key+1,$OrderHeadEle, $OrderListEle_arr);
+            $this->checkOrderInfo($key + 1, $OrderHeadEle, $OrderListEle_arr);
         }
 
         //统一传输实体结点实现--父类
@@ -148,10 +148,10 @@ class Client extends BaseClient
      * 定义验证器来校验订单信息
      * .
      */
-    public function checkOrderInfo($kk,$order_head_ele, $order_list_ele_arr)
+    public function checkOrderInfo($kk, $order_head_ele, $order_list_ele_arr)
     {
         $this->credentialValidate->setRule([
-            'ceb:orderNo'   => 'require|max:60',
+            'ceb:orderNo' => 'require|max:60',
 
             'ceb:ebpCode' => 'require|max:50',
             'ceb:ebpName' => 'require|max:100',
@@ -161,20 +161,19 @@ class Client extends BaseClient
             'ceb:goodsValue' => 'require',
             'ceb:freight'    => 'require',
         ]);
-  
+
         if (!$this->credentialValidate->check($order_head_ele)) {
-            throw new ClientError('第'.$kk.'条'.'报文订单数据: ' . $this->credentialValidate->getError());
+            throw new ClientError('第' . $kk . '条' . '报文订单数据: ' . $this->credentialValidate->getError());
         }
 
         $goods_total = 0;
         //检验商品, 并且计算总价是否相符
         foreach ($order_list_ele_arr as $key => $value) {
-
             $goods_total += ($value['ceb:qty'] * (float) $value['ceb:price']);
         }
 
         if (!($this->floatCmp((string) round($goods_total, 2), (string) $order_head_ele['ceb:goodsValue']))) {
-            throw new ClientError('第'.$kk.'条'.'报文订单数据: 商品实际成交价与订单记录不符。');
+            throw new ClientError('第' . $kk . '条' . '报文订单数据: 商品实际成交价与订单记录不符。');
         }
 
         return true;
