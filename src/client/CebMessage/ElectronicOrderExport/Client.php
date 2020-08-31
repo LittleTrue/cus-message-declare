@@ -88,10 +88,14 @@ class Client extends BaseClient
                 'ceb:orderType' => 'E',
                 'ceb:orderNo'   => $order_head['EntOrderNo'],
 
-                'ceb:ebpCode' => $declareConfig['EBPEntNo'],
-                'ceb:ebpName' => $declareConfig['EBPEntName'],
-                'ceb:ebcCode' => $declareConfig['EBEntNo'],
-                'ceb:ebcName' => $declareConfig['EBEntName'],
+                // 'ceb:ebpCode' => $declareConfig['EBPEntNo'],
+                // 'ceb:ebpName' => $declareConfig['EBPEntName'],
+                // 'ceb:ebcCode' => $declareConfig['EBEntNo'],
+                // 'ceb:ebcName' => $declareConfig['EBEntName'],
+                'ceb:ebpCode' => $order_head['EBPEntNo'],
+                'ceb:ebpName' => $order_head['EBPEntName'],
+                'ceb:ebcCode' => $order_head['EBEntNo'],
+                'ceb:ebcName' => $order_head['EBEntName'],
 
                 'ceb:goodsValue' => $order_head['OrderGoodTotal'],
                 'ceb:freight'    => $order_head['Freight'],
@@ -114,11 +118,11 @@ class Client extends BaseClient
                     'ceb:barCode'      => $vv['BarCode'],
                     'ceb:unit'         => $vv['GUnit'], //成交计量单位
                     'ceb:currency'     => $this->currency,
-                    'ceb:country'      => $vv['OriginCountry'],
-                    'ceb:qty'          => $vv['GoodsNumber'],
-                    'ceb:price'        => (float) $vv['GoodsPrice'],
-                    'ceb:totalPrice'   => round((float) $vv['GoodsPrice'] * $vv['GoodsNumber'], 2),
-                    'ceb:note'         => '',
+                    // 'ceb:country'      => $vv['OriginCountry'],
+                    'ceb:qty'        => $vv['GoodsNumber'],
+                    'ceb:price'      => (float) $vv['GoodsPrice'],
+                    'ceb:totalPrice' => round((float) $vv['GoodsPrice'] * $vv['GoodsNumber'], 2),
+                    'ceb:note'       => '',
                 ];
 
                 $this->dom = $this->createEle($OrderListEle, $this->dom, $OrderList);
