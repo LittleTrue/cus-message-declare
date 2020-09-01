@@ -78,7 +78,7 @@ class Client extends BaseClient
                 'ceb:guid'      => $value['guid'],
                 'ceb:appType'   => $this->opType,
                 'ceb:appTime'   => $this->sendTime,
-                'ceb:appStatus' => 2,
+                'ceb:appStatus' => $declareConfig['appStatus'], ,
 
                 'ceb:ebpCode' => empty($declareConfig['EBPEntNo']) ? '' : $declareConfig['EBPEntNo'],
                 'ceb:ebpName' => empty($declareConfig['EBPEntName']) ? '' : $declareConfig['EBPEntName'],
