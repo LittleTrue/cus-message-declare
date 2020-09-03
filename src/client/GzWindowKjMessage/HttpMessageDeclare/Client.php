@@ -28,7 +28,8 @@ class Client extends BaseClient
         $ctime             = date('YmdHis');
         $doc               = new \DOMDocument('1.0', 'utf-8');
         $doc->formatOutput = true;
-        $guid              = $this->getUid($messageType, $baseConfig['Sender']);
+        // $guid              = $this->getUid($messageType, $baseConfig['Sender']);
+        $guid              = $baseConfig['MessageId'];
         $root              = $doc->createElement('GzeportTransfer');
         $root->setAttribute('xmlns:ds', 'http://www.w3.org/2000/09/xmldsig#');
         $root->setAttribute('xmlns:n1', 'http://www.altova.com/samplexml/other-namespace');
@@ -39,9 +40,10 @@ class Client extends BaseClient
                 'MessageID'   => $guid,
                 'MessageType' => $messageType,
                 'Sender'      => $baseConfig['Sender'],
-                'Receivers'   => [
-                    'Receiver' => $baseConfig['Receiver'],
-                ],
+                // 'Receivers'   => [
+                //     'Receiver' => $baseConfig['Receiver'],
+                // ],
+                'Receivers'   =>'',
                 'SendTime' => $ctime,
                 'Version'  => '1.0',
                 'FileName' => $baseConfig['FileName'],
@@ -49,7 +51,8 @@ class Client extends BaseClient
             'Data' => $data,
         ];
         $obj                = ['obj' => $head];
-        $xml                = $this->arrayToXml($obj);
+        // $xml                = $this->arrayToXml($obj);
+        $xml                = $this->specialArrayToXml($obj,$baseConfig['Receiver']);
         $doc1               = new \DOMDocument();
         $doc1->formatOutput = true;
         $xmlNode            = $doc1->loadXML($xml);
@@ -99,4 +102,45 @@ class Client extends BaseClient
         }
         return $str;
     }
+
+    /**
+     * 数组转xml(特殊改造).
+     */
+    private function specialArrayToXml($arr,$receives)
+    {
+        $str = '';
+        $t_tmp = '';
+        foreach ($arr as $k => $v) {
+            if (is_array($v)) {
+                $vkey = key($v);
+                if (is_numeric($vkey)) {
+                    foreach ($v as $key => $val) {
+                        $str .= "<{$k}>";
+                        $str .= $this->specialArrayToXml($val,$receives);
+                        $str .= "</{$k}>";
+                    }
+                } else {
+                    $tmp = $this->specialArrayToXml($v,$receives);
+                    $str .= "<{$k}>{$tmp}</{$k}>";
+                }
+            } else {
+                if($k == 'Receivers' ){
+                
+                    foreach ($receives as $vvv) {
+                        $t_tmp .= "<Receiver>";
+                        $t_tmp .= $vvv;
+                        $t_tmp .= "</Receiver>";
+                    }
+                    $str .= "<{$k}>{$t_tmp}</{$k}>";
+                }else{
+                    $str .= "<{$k}>";
+                    $str .= $v;
+                    $str .= "</{$k}>";
+                }
+                
+            }
+        }
+        return $str;
+    }
+
 }
