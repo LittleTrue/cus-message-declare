@@ -52,8 +52,8 @@ class Client extends BaseClient
             'EBEntNo'   => 'require|max:18',
             'EBEntName' => 'require|max:100',
 
-            'EHSEntNo'     => 'require|max:18',
-            'EHSEntName'   => 'require|max:100',
+            'EHSEntNo'   => 'require|max:18',
+            'EHSEntName' => 'require|max:100',
             // 'EntWaybillNo' => 'require|max:80',
 
             // 'ceb:logisticsNo'   => $checklistInfo['EntWaybillNo'],
@@ -116,25 +116,25 @@ class Client extends BaseClient
 
             $InventoryHeadEle = [
                 'ceb:guid'      => $declareConfig['MessageId'],
-                'ceb:appType'   => $this->opType,
+                'ceb:appType'   => $declareConfig['OpType'],
                 'ceb:appTime'   => $this->sendTime,
-                'ceb:appStatus' => '2',
+                'ceb:appStatus' => $declareConfig['appStatus'],
 
-                'ceb:customsCode' => $declareConfig['CustomsCode'],
+                'ceb:customsCode' => $head['CustomsCode'],
 
-                'ceb:ebpCode' => $declareConfig['EBPEntNo'],
-                'ceb:ebpName' => $declareConfig['EBPEntName'],
+                'ceb:ebpCode' => $head['EBPEntNo'],
+                'ceb:ebpName' => $head['EBPEntName'],
 
                 'ceb:orderNo' => $head['orderNo'],
 
-                'ceb:logisticsCode' => $declareConfig['EHSEntNo'],
-                'ceb:logisticsName' => $declareConfig['EHSEntName'],
+                'ceb:logisticsCode' => $head['EHSEntNo'],
+                'ceb:logisticsName' => $head['EHSEntName'],
                 'ceb:logisticsNo'   => $head['EntWaybillNo'],
 
                 'ceb:copNo' => $head['EntEListNo'],
 
                 'ceb:ieFlag'   => $this->ieFlag,
-                'ceb:portCode' => $declareConfig['IEPort'],
+                'ceb:portCode' => $head['IEPort'],
 
                 'ceb:ieDate' => $this->sendDay,
 
@@ -142,15 +142,15 @@ class Client extends BaseClient
                 'ceb:agentCode'      => $declareConfig['DeclEntNo'],
                 'ceb:agentName'      => $declareConfig['DeclEntName'],
 
-                'ceb:ebcCode' => $declareConfig['EBEntNo'],
-                'ceb:ebcName' => $declareConfig['EBEntName'],
+                'ceb:ebcCode' => $head['EBEntNo'],
+                'ceb:ebcName' => $head['EBEntName'],
 
                 'ceb:ownerCode'      => $head['ownerCode'],
                 'ceb:ownerName'      => $head['ownerName'],
-                'ceb:iacCode'        => $declareConfig['iacCode'],
-                'ceb:iacName'        => $declareConfig['iacName'],
-                'ceb:emsNo'          => $declareConfig['EmsNo'],
-                'ceb:tradeMode'      => $declareConfig['TradeMode'],
+                'ceb:iacCode'        => $head['iacCode'],
+                'ceb:iacName'        => $head['iacName'],
+                'ceb:emsNo'          => $head['EmsNo'],
+                'ceb:tradeMode'      => $head['TradeMode'],
                 'ceb:trafMode'       => $head['trafMode'],
                 'ceb:trafName'       => empty($head['trafName']) ? '' : $head['trafName'],
                 'ceb:voyageNo'       => empty($head['voyageNo']) ? '' : $head['voyageNo'],
@@ -189,12 +189,15 @@ class Client extends BaseClient
                     'ceb:gname'  => $value['gname'],
                     'ceb:gmodel' => $value['gmodel'],
 
-                    'ceb:barCode'    => $value['BarCode'],
-                    'ceb:country'    => $value['OriginCountry'],
-                    'ceb:currency'   => $this->currency,
-                    'ceb:qty'        => $value['GoodsNumber'],
-                    'ceb:qty1'       => $value['UnitSum1'] * $value['GoodsNumber'],
-                    'ceb:qty2'       => empty($value['UnitSum2'] * $value['GoodsNumber']) ? '' : ($value['UnitSum2'] * $value['GoodsNumber']),
+                    'ceb:barCode'  => $value['BarCode'],
+                    'ceb:country'  => $value['OriginCountry'],
+                    'ceb:currency' => $this->currency,
+                    // 'ceb:qty'        => $value['GoodsNumber'],
+                    // 'ceb:qty1'       => $value['UnitSum1'] * $value['GoodsNumber'],
+                    // 'ceb:qty2'       => empty($value['UnitSum2'] * $value['GoodsNumber']) ? '' : ($value['UnitSum2'] * $value['GoodsNumber']),
+                    'ceb:qty'        => $value['qty'],
+                    'ceb:qty1'       => $value['qty1'],
+                    'ceb:qty2'       => empty($value['qty2']) ? '' : $value['qty2'],
                     'ceb:unit'       => $value['GUnit'],
                     'ceb:unit1'      => $value['StdUnit'],
                     'ceb:unit2'      => empty($value['SecUnit']) ? '' : $value['SecUnit'],
@@ -239,9 +242,9 @@ class Client extends BaseClient
         $head_rules = [
             'ceb:orderNo' => 'require|max:60',
 
-            'ceb:copNo' => 'require|max:30',
-            'ceb:logisticsNo'=> 'require|max:80',
-            'ceb:portCode' => 'require|max:4',
+            'ceb:copNo'       => 'require|max:30',
+            'ceb:logisticsNo' => 'require|max:80',
+            'ceb:portCode'    => 'require|max:4',
 
             'ceb:statisticsFlag' => 'require|max:1',
 
@@ -263,7 +266,6 @@ class Client extends BaseClient
             'ceb:grossWeight' => 'require|number',
             'ceb:netWeight'   => 'require|number',
         ];
-
 
         $list_rules = [
             'ceb:itemNo'       => 'require|max:20',
@@ -307,8 +309,8 @@ class Client extends BaseClient
         }
 
         $this->credentialValidate->setRule($list_rules);
-        
-        foreach($goodsListEle_arr as $key =>$value ){
+
+        foreach ($goodsListEle_arr as $key => $value) {
             // var_dump($value);
             if (!$this->credentialValidate->check($value)) {
                 throw new ClientError('报文清单数据: ' . $this->credentialValidate->getError());
