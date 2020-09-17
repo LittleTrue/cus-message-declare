@@ -47,23 +47,23 @@ class Client extends BaseClient
     {
         $rule = [
             //修改
-            'EBPEntNo'   => 'require|max:50',
-            'EBPEntName' => 'require|max:100',
+            // 'EBPEntNo'   => 'require|max:50',
+            // 'EBPEntName' => 'require|max:100',
 
-            'EBEntNo'   => 'require|max:18',
-            'EBEntName' => 'require|max:100',
+            // 'EBEntNo'   => 'require|max:18',
+            // 'EBEntName' => 'require|max:100',
 
-            'EHSEntNo'   => 'require|max:18',
-            'EHSEntName' => 'require|max:100',
+            // 'EHSEntNo'   => 'require|max:18',
+            // 'EHSEntName' => 'require|max:100',
             // 'EntWaybillNo' => 'require|max:80',
 
             // 'ceb:logisticsNo'   => $checklistInfo['EntWaybillNo'],
             // 'ceb:logisticsCode' => $declareConfig['EHSEntNo'],
             // 'ceb:logisticsName' => $declareConfig['EHSEntName'],
 
-            'CustomsCode' => 'require|max:4',
+            // 'CustomsCode' => 'require|max:4',
 
-            'TradeMode' => 'require|max:4',
+            // 'TradeMode' => 'require|max:4',
 
             'DeclEntNo'    => 'require|max:18',
             'DeclEntName'  => 'require|max:100',
@@ -74,19 +74,19 @@ class Client extends BaseClient
             'OpType' => 'require|max:1',
         ];
 
-        //根据贸易模型选择配置
-        if (isset($declareConfig['TradeMode'])) {
-            if ('9610' == $declareConfig['TradeMode']) {
-                array_merge($rule, [
-                    //9610
-                    'iacCode' => 'require|max:18',
-                    'iacName' => 'require|max:100',
-                    'emsNo'   => 'require|max:30',
-                ]);
-            }
-        } else {
-            throw new ClientError('报文传输配置, 贸易模式未设置。');
-        }
+        // //根据贸易模型选择配置
+        // if (isset($declareConfig['TradeMode'])) {
+        //     if ('9610' == $declareConfig['TradeMode']) {
+        //         array_merge($rule, [
+        //             //9610
+        //             'iacCode' => 'require|max:18',
+        //             'iacName' => 'require|max:100',
+        //             'emsNo'   => 'require|max:30',
+        //         ]);
+        //     }
+        // } else {
+        //     throw new ClientError('报文传输配置, 贸易模式未设置。');
+        // }
 
         $this->credentialValidate->setRule($rule);
 
@@ -186,16 +186,13 @@ class Client extends BaseClient
                     'ceb:itemRecordNo' => $value['EmsNo'],
                     'ceb:itemName'     => $value['GoodsName'],
 
-                    'ceb:gcode'  => $value['gcode'],
-                    'ceb:gname'  => $value['gname'],
-                    'ceb:gmodel' => $value['gmodel'],
-
+                    'ceb:gcode'    => $value['gcode'],
+                    'ceb:gname'    => $value['gname'],
+                    'ceb:gmodel'   => $value['gmodel'],
                     'ceb:barCode'  => $value['BarCode'],
                     'ceb:country'  => $value['OriginCountry'],
                     'ceb:currency' => $this->currency,
-                    // 'ceb:qty'        => $value['GoodsNumber'],
-                    // 'ceb:qty1'       => $value['UnitSum1'] * $value['GoodsNumber'],
-                    // 'ceb:qty2'       => empty($value['UnitSum2'] * $value['GoodsNumber']) ? '' : ($value['UnitSum2'] * $value['GoodsNumber']),
+
                     'ceb:qty'        => $value['qty'],
                     'ceb:qty1'       => $value['qty1'],
                     'ceb:qty2'       => empty($value['qty2']) ? '' : $value['qty2'],
@@ -203,8 +200,12 @@ class Client extends BaseClient
                     'ceb:unit1'      => $value['StdUnit'],
                     'ceb:unit2'      => empty($value['SecUnit']) ? '' : $value['SecUnit'],
                     'ceb:price'      => (float) $value['GoodsPrice'],
-                    'ceb:totalPrice' => round((float) $value['GoodsPrice'] * $value['GoodsNumber'], 2),
+                    'ceb:totalPrice' => $value['TotalPrice'],
                     'ceb:note'       => empty($value['note']) ? '' : $value['note'],
+                    // 'ceb:totalPrice' => round((float) $value['GoodsPrice'] * $value['GoodsNumber'], 2),
+                    // 'ceb:qty'        => $value['GoodsNumber'],
+                    // 'ceb:qty1'       => $value['UnitSum1'] * $value['GoodsNumber'],
+                    // 'ceb:qty2'       => empty($value['UnitSum2'] * $value['GoodsNumber']) ? '' : ($value['UnitSum2'] * $value['GoodsNumber']),
                 ];
 
                 if (empty($InventoryListEle['ceb:qty2']) || empty($InventoryListEle['ceb:unit2'])) {
@@ -241,6 +242,16 @@ class Client extends BaseClient
     {
         //根据不同的贸易模式, 区分验证规则
         $head_rules = [
+            'ceb:logisticsCode' => 'require',
+            'ceb:logisticsName' => 'require',
+            'ceb:logisticsNo'   => 'require',
+            'ceb:ebcCode'       => 'require',
+            'ceb:ebcName'       => 'require',
+            'ceb:customsCode'   => 'require',
+            'ceb:ebpCode'       => 'require',
+            'ceb:ebpName'       => 'require',
+            'ceb:tradeMode'     => 'require',
+
             'ceb:orderNo' => 'require|max:60',
 
             'ceb:copNo'       => 'require|max:30',
