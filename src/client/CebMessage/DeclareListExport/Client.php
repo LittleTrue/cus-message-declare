@@ -140,8 +140,8 @@ class Client extends BaseClient
                 'ceb:ieDate' => $this->sendDay,
 
                 'ceb:statisticsFlag' => $head['statisticsFlag'],
-                'ceb:agentCode'      => $declareConfig['DeclEntNo'],
-                'ceb:agentName'      => $declareConfig['DeclEntName'],
+                'ceb:agentCode'      => $head['agent_code'],
+                'ceb:agentName'      => $head['agent_name'],
 
                 'ceb:ebcCode' => $head['EBEntNo'],
                 'ceb:ebcName' => $head['EBEntName'],
