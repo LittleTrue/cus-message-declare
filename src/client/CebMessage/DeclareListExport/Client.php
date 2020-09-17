@@ -5,6 +5,7 @@ namespace customs\CustomsDeclareClient\CebMessage\DeclareListExport;
 use customs\CustomsDeclareClient\Application;
 use customs\CustomsDeclareClient\Base\BaseClient;
 use customs\CustomsDeclareClient\Base\CebMessageBuild;
+use customs\CustomsDeclareClient\Base\Exceptions\ClientError;
 
 /**
  * 客户端.
