@@ -44,9 +44,10 @@ class Client extends BaseClient
             'DeclEntDxpid' => 'require|max:30',
             'MessageId'    => 'require|max:36',
             'OpType'       => 'require|max:1',
-            'CustomsCode'  => 'require|max:4',
-            'EBEntNo'      => 'require|max:18',
-            'EBEntName'    => 'require|max:100',
+            'appStatus'    => 'require|max:1',
+            // 'CustomsCode'  => 'require|max:4',
+            // 'EBEntNo'      => 'require|max:18',
+            // 'EBEntName'    => 'require|max:100',
             // 'DeclAgentCode' => 'require|max:18',
             // 'DeclAgentName' => 'require|max:100',
         ];
@@ -81,13 +82,13 @@ class Client extends BaseClient
                 'ceb:guid'          => $declareConfig['MessageId'],
                 'ceb:appType'       => $this->opType,
                 'ceb:appTime'       => $this->sendTime,
-                'ceb:appStatus'     => '2',
-                'ceb:customsCode'   => $declareConfig['CustomsCode'],
+                'ceb:appStatus'     => $declareConfig['appStatus'],
+                'ceb:customsCode'   => $head['CustomsCode'],
                 'ceb:copNo'         => $head['EntEListNo'],
-                'ceb:agentCode'     => $declareConfig['DeclEntNo'],
-                'ceb:agentName'     => $declareConfig['DeclEntName'],
-                'ceb:ebcCode'       => $declareConfig['EBEntNo'],
-                'ceb:ebcName'       => $declareConfig['EBEntName'],
+                'ceb:agentCode'     => $head['DeclEntNo'],
+                'ceb:agentName'     => $head['DeclEntName'],
+                'ceb:ebcCode'       => $head['EBEntNo'],
+                'ceb:ebcName'       => $head['EBEntName'],
                 'ceb:declAgentCode' => $head['DeclAgentCode'],
                 'ceb:declAgentName' => $head['DeclAgentName'],
                 'ceb:summaryFlag'   => $head['SummaryFlag'],
@@ -141,6 +142,11 @@ class Client extends BaseClient
             'ceb:itemNameFlag'  => 'require|max:1',
             'ceb:msgCount'      => 'require|max:20',
             'ceb:msgSeqNo'      => 'require|max:20',
+            'ceb:customsCode'   => 'require|max:4',
+            'ceb:agentCode'     => 'require|max:18',
+            'ceb:agentName'     => 'require|max:100',
+            'ceb:ebcCode'       => 'require|max:18',
+            'ceb:ebcName'       => 'require|max:100',
         ];
 
         $list_rules = [
@@ -150,14 +156,14 @@ class Client extends BaseClient
         $this->credentialValidate->setRule($head_rules);
 
         if (!$this->credentialValidate->check($SummaryApplyHeadEle)) {
-            throw new ClientError('报文清单数据: ' . $this->credentialValidate->getError());
+            throw new ClientError('报文数据错误: ' . $this->credentialValidate->getError());
         }
 
         $this->credentialValidate->setRule($list_rules);
 
         foreach ($SummaryApplyListEle_arr as $key => $value) {
             if (!$this->credentialValidate->check($value)) {
-                throw new ClientError('报文清单数据: ' . $this->credentialValidate->getError());
+                throw new ClientError('报文数据错误: ' . $this->credentialValidate->getError());
             }
         }
 

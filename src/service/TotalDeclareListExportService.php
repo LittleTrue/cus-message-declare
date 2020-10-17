@@ -8,12 +8,12 @@ use customs\CustomsDeclareClient\Base\Exceptions\ClientError;
 /**
  * 海关直连总署 - CEB报文 - 出口清单总分单.
  */
-class WayBillExportService
+class TotalDeclareListExportService
 {
     /**
-     * @var WayBillExport
+     * @var TotalDeclareListExport
      */
-    private $_wayBillExport;
+    private $_summaryBillExport;
 
     /**
      * @var HttpMessageDeclare
@@ -22,7 +22,7 @@ class WayBillExportService
 
     public function __construct(Application $app)
     {
-        $this->_wayBillExport            = $app['way_bill_export'];
+        $this->_totalDeclareListExport   = $app['total_declare_list_export'];
         $this->_httpMessageDeclareClient = $app['http_message_declare'];
     }
 
@@ -34,7 +34,7 @@ class WayBillExportService
      */
     public function getMessageType()
     {
-        return $this->_wayBillExport->messageType;
+        return $this->_totalDeclareListExport->messageType;
     }
 
     /**
@@ -49,7 +49,7 @@ class WayBillExportService
             throw new ClientError('参数缺失', 1000001);
         }
 
-        return $this->_wayBillExport->generateXmlPost($declareConfig, $declareParams);
+        return $this->_totalDeclareListExport->generateXmlPost($declareConfig, $declareParams);
     }
 
     /**
@@ -65,8 +65,8 @@ class WayBillExportService
             throw new ClientError('参数缺失', 1000001);
         }
 
-        $xml_data = $this->_wayBillExport->generateXmlPost($declareConfig, $declareParams);
+        $xml_data = $this->_totalDeclareListExport->generateXmlPost($declareConfig, $declareParams);
 
-        return $this->_httpMessageDeclareClient->generateHttpDoc($this->_wayBillExport->messageType, $xml_data, $httpBase, $key);
+        return $this->_httpMessageDeclareClient->generateHttpDoc($this->_totalDeclareListExport->messageType, $xml_data, $httpBase, $key);
     }
 }

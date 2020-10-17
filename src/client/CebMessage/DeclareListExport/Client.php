@@ -5,6 +5,7 @@ namespace customs\CustomsDeclareClient\CebMessage\DeclareListExport;
 use customs\CustomsDeclareClient\Application;
 use customs\CustomsDeclareClient\Base\BaseClient;
 use customs\CustomsDeclareClient\Base\CebMessageBuild;
+use customs\CustomsDeclareClient\Base\Exceptions\ClientError;
 
 /**
  * 客户端.
@@ -46,23 +47,23 @@ class Client extends BaseClient
     {
         $rule = [
             //修改
-            'EBPEntNo'   => 'require|max:50',
-            'EBPEntName' => 'require|max:100',
+            // 'EBPEntNo'   => 'require|max:50',
+            // 'EBPEntName' => 'require|max:100',
 
-            'EBEntNo'   => 'require|max:18',
-            'EBEntName' => 'require|max:100',
+            // 'EBEntNo'   => 'require|max:18',
+            // 'EBEntName' => 'require|max:100',
 
-            'EHSEntNo'     => 'require|max:18',
-            'EHSEntName'   => 'require|max:100',
+            // 'EHSEntNo'   => 'require|max:18',
+            // 'EHSEntName' => 'require|max:100',
             // 'EntWaybillNo' => 'require|max:80',
 
             // 'ceb:logisticsNo'   => $checklistInfo['EntWaybillNo'],
             // 'ceb:logisticsCode' => $declareConfig['EHSEntNo'],
             // 'ceb:logisticsName' => $declareConfig['EHSEntName'],
 
-            'CustomsCode' => 'require|max:4',
+            // 'CustomsCode' => 'require|max:4',
 
-            'TradeMode' => 'require|max:4',
+            // 'TradeMode' => 'require|max:4',
 
             'DeclEntNo'    => 'require|max:18',
             'DeclEntName'  => 'require|max:100',
@@ -73,19 +74,19 @@ class Client extends BaseClient
             'OpType' => 'require|max:1',
         ];
 
-        //根据贸易模型选择配置
-        if (isset($declareConfig['TradeMode'])) {
-            if ('9610' == $declareConfig['TradeMode']) {
-                array_merge($rule, [
-                    //9610
-                    'iacCode' => 'require|max:18',
-                    'iacName' => 'require|max:100',
-                    'emsNo'   => 'require|max:30',
-                ]);
-            }
-        } else {
-            throw new ClientError('报文传输配置, 贸易模式未设置。');
-        }
+        // //根据贸易模型选择配置
+        // if (isset($declareConfig['TradeMode'])) {
+        //     if ('9610' == $declareConfig['TradeMode']) {
+        //         array_merge($rule, [
+        //             //9610
+        //             'iacCode' => 'require|max:18',
+        //             'iacName' => 'require|max:100',
+        //             'emsNo'   => 'require|max:30',
+        //         ]);
+        //     }
+        // } else {
+        //     throw new ClientError('报文传输配置, 贸易模式未设置。');
+        // }
 
         $this->credentialValidate->setRule($rule);
 
@@ -116,41 +117,41 @@ class Client extends BaseClient
 
             $InventoryHeadEle = [
                 'ceb:guid'      => $declareConfig['MessageId'],
-                'ceb:appType'   => $this->opType,
+                'ceb:appType'   => $declareConfig['OpType'],
                 'ceb:appTime'   => $this->sendTime,
-                'ceb:appStatus' => '2',
+                'ceb:appStatus' => $declareConfig['appStatus'],
 
-                'ceb:customsCode' => $declareConfig['CustomsCode'],
+                'ceb:customsCode' => $head['CustomsCode'],
 
-                'ceb:ebpCode' => $declareConfig['EBPEntNo'],
-                'ceb:ebpName' => $declareConfig['EBPEntName'],
+                'ceb:ebpCode' => $head['EBPEntNo'],
+                'ceb:ebpName' => $head['EBPEntName'],
 
                 'ceb:orderNo' => $head['orderNo'],
 
-                'ceb:logisticsCode' => $declareConfig['EHSEntNo'],
-                'ceb:logisticsName' => $declareConfig['EHSEntName'],
+                'ceb:logisticsCode' => $head['EHSEntNo'],
+                'ceb:logisticsName' => $head['EHSEntName'],
                 'ceb:logisticsNo'   => $head['EntWaybillNo'],
 
                 'ceb:copNo' => $head['EntEListNo'],
 
                 'ceb:ieFlag'   => $this->ieFlag,
-                'ceb:portCode' => $declareConfig['IEPort'],
+                'ceb:portCode' => $head['IEPort'],
 
                 'ceb:ieDate' => $this->sendDay,
 
                 'ceb:statisticsFlag' => $head['statisticsFlag'],
-                'ceb:agentCode'      => $declareConfig['DeclEntNo'],
-                'ceb:agentName'      => $declareConfig['DeclEntName'],
+                'ceb:agentCode'      => $head['agent_code'],
+                'ceb:agentName'      => $head['agent_name'],
 
-                'ceb:ebcCode' => $declareConfig['EBEntNo'],
-                'ceb:ebcName' => $declareConfig['EBEntName'],
+                'ceb:ebcCode' => $head['EBEntNo'],
+                'ceb:ebcName' => $head['EBEntName'],
 
                 'ceb:ownerCode'      => $head['ownerCode'],
                 'ceb:ownerName'      => $head['ownerName'],
-                'ceb:iacCode'        => $declareConfig['iacCode'],
-                'ceb:iacName'        => $declareConfig['iacName'],
-                'ceb:emsNo'          => $declareConfig['EmsNo'],
-                'ceb:tradeMode'      => $declareConfig['TradeMode'],
+                'ceb:iacCode'        => $head['iacCode'],
+                'ceb:iacName'        => $head['iacName'],
+                'ceb:emsNo'          => $head['EmsNo'],
+                'ceb:tradeMode'      => $head['TradeMode'],
                 'ceb:trafMode'       => $head['trafMode'],
                 'ceb:trafName'       => empty($head['trafName']) ? '' : $head['trafName'],
                 'ceb:voyageNo'       => empty($head['voyageNo']) ? '' : $head['voyageNo'],
@@ -185,22 +186,26 @@ class Client extends BaseClient
                     'ceb:itemRecordNo' => $value['EmsNo'],
                     'ceb:itemName'     => $value['GoodsName'],
 
-                    'ceb:gcode'  => $value['gcode'],
-                    'ceb:gname'  => $value['gname'],
-                    'ceb:gmodel' => $value['gmodel'],
+                    'ceb:gcode'    => $value['gcode'],
+                    'ceb:gname'    => $value['gname'],
+                    'ceb:gmodel'   => $value['gmodel'],
+                    'ceb:barCode'  => $value['BarCode'],
+                    'ceb:country'  => $value['OriginCountry'],
+                    'ceb:currency' => $this->currency,
 
-                    'ceb:barCode'    => $value['BarCode'],
-                    'ceb:country'    => $value['OriginCountry'],
-                    'ceb:currency'   => $this->currency,
-                    'ceb:qty'        => $value['GoodsNumber'],
-                    'ceb:qty1'       => $value['UnitSum1'] * $value['GoodsNumber'],
-                    'ceb:qty2'       => empty($value['UnitSum2'] * $value['GoodsNumber']) ? '' : ($value['UnitSum2'] * $value['GoodsNumber']),
+                    'ceb:qty'        => $value['qty'],
+                    'ceb:qty1'       => $value['qty1'],
+                    'ceb:qty2'       => empty($value['qty2']) ? '' : $value['qty2'],
                     'ceb:unit'       => $value['GUnit'],
                     'ceb:unit1'      => $value['StdUnit'],
                     'ceb:unit2'      => empty($value['SecUnit']) ? '' : $value['SecUnit'],
                     'ceb:price'      => (float) $value['GoodsPrice'],
-                    'ceb:totalPrice' => round((float) $value['GoodsPrice'] * $value['GoodsNumber'], 2),
+                    'ceb:totalPrice' => $value['TotalPrice'],
                     'ceb:note'       => empty($value['note']) ? '' : $value['note'],
+                    // 'ceb:totalPrice' => round((float) $value['GoodsPrice'] * $value['GoodsNumber'], 2),
+                    // 'ceb:qty'        => $value['GoodsNumber'],
+                    // 'ceb:qty1'       => $value['UnitSum1'] * $value['GoodsNumber'],
+                    // 'ceb:qty2'       => empty($value['UnitSum2'] * $value['GoodsNumber']) ? '' : ($value['UnitSum2'] * $value['GoodsNumber']),
                 ];
 
                 if (empty($InventoryListEle['ceb:qty2']) || empty($InventoryListEle['ceb:unit2'])) {
@@ -237,11 +242,21 @@ class Client extends BaseClient
     {
         //根据不同的贸易模式, 区分验证规则
         $head_rules = [
+            'ceb:logisticsCode' => 'require',
+            'ceb:logisticsName' => 'require',
+            'ceb:logisticsNo'   => 'require',
+            'ceb:ebcCode'       => 'require',
+            'ceb:ebcName'       => 'require',
+            'ceb:customsCode'   => 'require',
+            'ceb:ebpCode'       => 'require',
+            'ceb:ebpName'       => 'require',
+            'ceb:tradeMode'     => 'require',
+
             'ceb:orderNo' => 'require|max:60',
 
-            'ceb:copNo' => 'require|max:30',
-            'ceb:logisticsNo'=> 'require|max:80',
-            'ceb:portCode' => 'require|max:4',
+            'ceb:copNo'       => 'require|max:30',
+            'ceb:logisticsNo' => 'require|max:80',
+            'ceb:portCode'    => 'require|max:4',
 
             'ceb:statisticsFlag' => 'require|max:1',
 
@@ -263,7 +278,6 @@ class Client extends BaseClient
             'ceb:grossWeight' => 'require|number',
             'ceb:netWeight'   => 'require|number',
         ];
-
 
         $list_rules = [
             'ceb:itemNo'       => 'require|max:20',
@@ -307,8 +321,8 @@ class Client extends BaseClient
         }
 
         $this->credentialValidate->setRule($list_rules);
-        
-        foreach($goodsListEle_arr as $key =>$value ){
+
+        foreach ($goodsListEle_arr as $key => $value) {
             // var_dump($value);
             if (!$this->credentialValidate->check($value)) {
                 throw new ClientError('报文清单数据: ' . $this->credentialValidate->getError());

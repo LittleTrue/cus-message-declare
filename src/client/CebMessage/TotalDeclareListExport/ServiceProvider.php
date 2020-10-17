@@ -1,6 +1,6 @@
 <?php
 
-namespace customs\CustomsDeclareClient\CebMessage\WayBillExport;
+namespace customs\CustomsDeclareClient\CebMessage\TotalDeclareListExport;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -12,7 +12,7 @@ class ServiceProvider implements ServiceProviderInterface
 {
     public function register(Container $app)
     {
-        $app['way_bill_export'] = function ($app) {
+        $app['total_declare_list_export'] = function ($app) {
             return new Client($app);
         };
     }
