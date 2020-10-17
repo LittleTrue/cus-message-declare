@@ -232,7 +232,8 @@ class Client extends BaseClient
 
             $InventoryListEle = [
                 'ceb:gnum'         => $kk + 1,
-                'ceb:itemRecordNo' => '',
+                //保税进口账册备案
+                'ceb:itemRecordNo' => $vv['EmsNo'],
                 'ceb:itemNo'       => $vv['SKU'],
                 'ceb:itemName'     => $vv['GoodsName'],
                 'ceb:gcode'        => $vv['HSCode'],
