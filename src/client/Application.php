@@ -24,6 +24,7 @@ class Application extends Container
         CebMessage\DeclareListExport\ServiceProvider::class,
         CebMessage\CancelDeclareExport\ServiceProvider::class,
         CebMessage\DepartureOrderExport\ServiceProvider::class,
+        CebMessage\EmsLogisticsDeclare\ServiceProvider::class,
         CebMessage\ArrivalExport\ServiceProvider::class,
         // CebMessage\WayBillExport\ServiceProvider::class,
         CebMessage\SummaryBillExport\ServiceProvider::class,
