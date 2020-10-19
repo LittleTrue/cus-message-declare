@@ -135,6 +135,8 @@ class Client extends BaseClient
                 if (empty($declareConfig['CusEListNo']) || empty($declareConfig['invtNo'])) {
                     throw new ClientError('修改报文, 海关单据号invtNo和预录入号preNo信息必填。');
                 }
+            } else {
+                $this->sendTime = date('YmdHis', time());
             }
             $this->opType = $declareConfig['OpType'];
         } else {
