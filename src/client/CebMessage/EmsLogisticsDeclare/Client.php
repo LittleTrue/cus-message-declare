@@ -226,4 +226,46 @@ class Client extends BaseClient
 
         return $this->dom->saveXML();
     }
+
+    //电子运单信息重推--重推指ems重推旧的报文数据给海关，修改不了报文数据
+    public function freightRepush($declareConfig, $declareParams)
+    {
+        //根节点生成--父类
+        $this->dom = new \DomDocument('1.0', 'UTF-8');
+        $root_node = $this->dom->createElement('Manifest');
+        $this->dom->appendchild($root_node);
+
+        //组装头部
+        $this->nodeLink['root_node'] = $root_node;
+        $head                        = $this->dom->createElement('Head');
+        $this->nodeLink['root_node']->appendchild($head);
+
+        $HeadEle = [
+            'MessageID'    => $declareConfig['MessageID'],
+            'FunctionCode' => $declareConfig['FunctionCode'],
+            'MessageType'  => $declareConfig['MessageType'],
+            'SenderID'     => $declareConfig['SenderID'],
+            'ReceiverID'   => $declareConfig['ReceiverID'],
+            'SendTime'     => $declareConfig['SendTime'],
+            'Version'      => $declareConfig['Version'],
+        ];
+
+        $this->dom = $this->createEle($HeadEle, $this->dom, $head);
+
+        $declaration_node = $this->dom->createElement('Declaration');
+        $this->nodeLink['root_node']->appendchild($declaration_node);
+
+        $freight_no_node = $this->dom->createElement('FreightNos');
+        $declaration_node->appendchild($freight_no_node);
+
+        //一个报文可以又多个订单
+        foreach ($declareParams as $value) {
+            $note = $this->dom->createElement('FreightNo');
+            $freight_no_node->appendchild($note);
+            $zhi = $this->dom->createTextNode($value);
+            $note->appendchild($zhi);
+        }
+
+        return $this->dom->saveXML();
+    }
 }
