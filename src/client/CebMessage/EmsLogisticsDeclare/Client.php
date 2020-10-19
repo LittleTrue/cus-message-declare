@@ -217,7 +217,7 @@ class Client extends BaseClient
 
         //一个报文可以又多个订单
         foreach ($declareParams as $value) {
-            $note = $this->dom->createElement('FreightNo');
+            $note = $this->dom->createElement('freightNo');
             $freight_no_node->appendchild($note);
             $zhi = $this->dom->createTextNode($value);
             $note->appendchild($zhi);
