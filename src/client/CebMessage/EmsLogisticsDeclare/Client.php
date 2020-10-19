@@ -64,11 +64,10 @@ class Client extends BaseClient
                 $result = $this->freightCheck($declareConfig, $declareParams);
                 break;
             case 'logistics_repush':
-                // $result = $this->freightCheck($declareConfig, $declareParams);
+                $result = $this->freightRepush($declareConfig, $declareParams);
                 break;
-            
             default:
-                # code...
+                throw new ClientError('报文组装操作类型错误');
                 break;
         }
 
@@ -260,7 +259,7 @@ class Client extends BaseClient
 
         //一个报文可以又多个订单
         foreach ($declareParams as $value) {
-            $note = $this->dom->createElement('FreightNo');
+            $note = $this->dom->createElement('freightNo');
             $freight_no_node->appendchild($note);
             $zhi = $this->dom->createTextNode($value);
             $note->appendchild($zhi);
