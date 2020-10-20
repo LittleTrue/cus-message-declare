@@ -214,9 +214,9 @@ class Client extends BaseClient
             'ceb:note'        => '',
         ];
 
-        // if (empty($InventoryHeadEle['ceb:invtNo'])) {
-        //     unset($InventoryHeadEle['ceb:invtNo']);
-        // }
+        if (empty($InventoryHeadEle['ceb:invtNo'])) {
+            unset($InventoryHeadEle['ceb:invtNo']);
+        }
 
         //兼容订购人电话为空或者非法时,使用收货人电话的情况
         if (empty((int) $InventoryHeadEle['ceb:buyerTelephone']) || (strlen($InventoryHeadEle['ceb:buyerTelephone']) < 11)) {
