@@ -167,12 +167,10 @@ class Client extends BaseClient
             //清单编号
             'ceb:copNo' => $checklistInfo['EntEListNo'],
             'ceb:preNo' => 2 == $this->opType ? $declareConfig['preNo'] : '',
+            'ceb:assureCode' => $declareConfig['DanBaoEntNo'],  //担保企业在KJ报文的是电商企业
 
             //1210
             'ceb:emsNo' => $declareConfig['EmsNo'],
-
-            'ceb:assureCode' => $declareConfig['DanBaoEntNo'],  //担保企业在KJ报文的是电商企业
-
             'ceb:invtNo' => 2 == $this->opType ? $declareConfig['CusEListNo'] : '',
 
             'ceb:ieFlag'           => $this->ieFlag,
@@ -216,9 +214,9 @@ class Client extends BaseClient
             'ceb:note'        => '',
         ];
 
-        if (empty($InventoryHeadEle['ceb:invtNo'])) {
-            unset($InventoryHeadEle['ceb:invtNo']);
-        }
+        // if (empty($InventoryHeadEle['ceb:invtNo'])) {
+        //     unset($InventoryHeadEle['ceb:invtNo']);
+        // }
 
         //兼容订购人电话为空或者非法时,使用收货人电话的情况
         if (empty((int) $InventoryHeadEle['ceb:buyerTelephone']) || (strlen($InventoryHeadEle['ceb:buyerTelephone']) < 11)) {
@@ -245,6 +243,7 @@ class Client extends BaseClient
 
                 'ceb:barCode'  => $vv['BarCode'],
                 'ceb:country'  => $vv['OriginCountry'],
+                'ceb:tradeCountry'=> '142',
                 'ceb:currency' => $this->currency,
                 'ceb:qty'      => $vv['GoodsNumber'],
                 'ceb:unit'     => $vv['GUnit'], //成交计量单位
