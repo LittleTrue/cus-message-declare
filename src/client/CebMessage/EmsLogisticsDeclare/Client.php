@@ -66,6 +66,9 @@ class Client extends BaseClient
             case 'logistics_repush':
                 $result = $this->freightRepush($declareConfig, $declareParams);
                 break;
+            case 'logistics_order_declare':
+                $result = $this->pushFreightOrder($declareConfig, $declareParams);
+                break;
             default:
                 throw new ClientError('报文组装操作类型错误');
                 break;
@@ -263,6 +266,70 @@ class Client extends BaseClient
             $freight_no_node->appendchild($note);
             $zhi = $this->dom->createTextNode($value);
             $note->appendchild($zhi);
+        }
+
+        return $this->dom->saveXML();
+    }
+
+    //EMS收寄订单信息推送报文
+    public function pushFreightOrder($declareConfig, $declareParams)
+    {
+        //根节点生成--父类
+        $this->dom = new \DomDocument('1.0', 'UTF-8');
+        $root_node = $this->dom->createElement('Manifest');
+        $this->dom->appendchild($root_node);
+
+        //组装头部
+        $this->nodeLink['root_node'] = $root_node;
+        $head                        = $this->dom->createElement('Head');
+        $this->nodeLink['root_node']->appendchild($head);
+
+        $HeadEle = [
+            'MessageID'    => $declareConfig['MessageID'],
+            'FunctionCode' => $declareConfig['FunctionCode'],
+            'MessageType'  => $declareConfig['MessageType'],
+            'SenderID'     => $declareConfig['SenderID'],
+            'ReceiverID'   => $declareConfig['ReceiverID'],
+            'SendTime'     => $declareConfig['SendTime'],
+            'Version'      => $declareConfig['Version'],
+        ];
+
+        $this->dom = $this->createEle($HeadEle, $this->dom, $head);
+
+        $declaration_node = $this->dom->createElement('Declaration');
+        $this->nodeLink['root_node']->appendchild($declaration_node);
+
+        $orders_node = $this->dom->createElement('EmsOrders');
+        $declaration_node->appendchild($orders_node);
+
+        //一个报文可以又多个订单
+        foreach ($declareParams as $key => $value) {
+            $order_node = $this->dom->createElement('Order');
+            $orders_node->appendchild($order_node);
+
+            $OrderEle = [
+                'logisticsNo'        => $value['logisticsNo'],
+                'businessType'       => $value['businessType'],
+                'weight'             => $value['weight'],
+                'shipper'            => $value['shipper'],
+                'shipperAddress'     => $value['shipperAddress'],
+                'shipperTelephone'   => $value['shipperTelephone'],
+                'consignee'          => $value['consignee'],
+                'consigneeAddress'   => $value['consigneeAddress'],
+                'consigneeTelephone' => $value['consigneeTelephone'],
+                'consigneeProvince'  => $value['consigneeProvince'],
+                'consigneeCity'      => $value['consigneeCity'],
+                'consigneeCounty'    => $value['consigneeCounty'],
+                'orderNo'            => $value['orderNo'],
+                'ebpCode'            => $value['ebpCode'],
+                'ebpName'            => $value['ebpName'],
+                'logisticsCode'      => $value['logisticsCode'],
+                'logisticsName'      => $value['logisticsName'],
+                'bigNo'              => $value['bigNo'],
+                'bigPasswd'          => $value['bigPasswd'],
+            ];
+
+            $this->dom = $this->createEle($OrderEle, $this->dom, $order_node);
         }
 
         return $this->dom->saveXML();
