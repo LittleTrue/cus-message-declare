@@ -299,37 +299,70 @@ class Client extends BaseClient
         $declaration_node = $this->dom->createElement('Declaration');
         $this->nodeLink['root_node']->appendchild($declaration_node);
 
-        $orders_node = $this->dom->createElement('EmsOrders');
+        $orders_node = $this->dom->createElement('OrderPkgs');
         $declaration_node->appendchild($orders_node);
 
         //一个报文可以又多个订单
         foreach ($declareParams as $key => $value) {
-            $order_node = $this->dom->createElement('Order');
+            $order_node = $this->dom->createElement('OrderPkg');
             $orders_node->appendchild($order_node);
 
             $OrderEle = [
-                'logisticsNo'        => $value['logisticsNo'],
-                'businessType'       => $value['businessType'],
-                'weight'             => $value['weight'],
-                'shipper'            => $value['shipper'],
-                'shipperAddress'     => $value['shipperAddress'],
-                'shipperTelephone'   => $value['shipperTelephone'],
-                'consignee'          => $value['consignee'],
-                'consigneeAddress'   => $value['consigneeAddress'],
-                'consigneeTelephone' => $value['consigneeTelephone'],
-                'consigneeProvince'  => $value['consigneeProvince'],
-                'consigneeCity'      => $value['consigneeCity'],
-                'consigneeCounty'    => $value['consigneeCounty'],
-                'orderNo'            => $value['orderNo'],
-                'ebpCode'            => $value['ebpCode'],
-                'ebpName'            => $value['ebpName'],
-                'logisticsCode'      => $value['logisticsCode'],
-                'logisticsName'      => $value['logisticsName'],
-                'bigNo'              => $value['bigNo'],
-                'bigPasswd'          => $value['bigPasswd'],
+                'appType'         => $value['appType'],
+                'orderNo'         => $value['orderNo'],
+                'accountBookNo'   => $value['accountBookNo'],
+                'inOutDate'       => $value['inOutDate'],
+                'inOutPortCode'   => $value['inOutPortCode'],
+                'declareDate'     => $value['declareDate'],
+                'arrivedPort'     => $value['arrivedPort'],
+                'ebcCode'         => $value['ebcCode'],
+                'ebcName'         => $value['ebcName'],
+                'logisticsNo'     => $value['logisticsNo'],
+                'fromCountry'     => $value['fromCountry'],
+                'roughWeight'     => $value['roughWeight'],
+                'netWeight'       => $value['netWeight'],
+                'packType'        => $value['packType'],
+                'declarePortCode' => $value['declarePortCode'],
+                'goodsYardCode'   => $value['goodsYardCode'],
+                'sender'          => $value['sender'],
+                'receiver'        => $value['receiver'],
+                'senderCountry'   => $value['senderCountry'],
+                'senderCity'      => $value['senderCity'],
+                'worth'           => $value['worth'],
+                'majorGoodName'   => $value['majorGoodName'],
+                'monitorDeclFlag' => $value['monitorDeclFlag'],
+                'orgCode'         => $value['orgCode'],
+                'remark'          => $value['remark'],
             ];
 
             $this->dom = $this->createEle($OrderEle, $this->dom, $order_node);
+
+            $goods_node = $this->dom->createElement('OrderPkgGoods');
+            $order_node->appendchild($goods_node);
+
+            foreach ($value['OrderPkgGood'] as $k => $v) {
+                $good_node = $this->dom->createElement('OrderPkgGood');
+                $goods_node->appendchild($good_node);
+                $GoodsEle = [
+                    'gnum'         => $v['gnum'],
+                    'gname'        => $v['gname'],
+                    'gmodel'       => $v['gmodel'],
+                    'country'      => $v['country'],
+                    'declarePrice' => $v['declarePrice'],
+                    'declareCount' => $v['declareCount'],
+                    'declareUnit'  => $v['declareUnit'],
+                    'gRoughWeight' => $v['gRoughWeight'],
+                    'gRecordCode'  => $v['gRecordCode'],
+                    'websiteHref'  => $v['websiteHref'],
+                    'mailTaxNo'    => $v['mailTaxNo'],
+                    'hsCode'       => $v['hsCode'],
+                    'gcode'        => $v['gcode'],
+                    'gTotalPrice'  => $v['gTotalPrice'],
+                    'gRemark'      => $v['gRemark'],
+                ];
+
+                $this->dom = $this->createEle($GoodsEle, $this->dom, $good_node);
+            }
         }
 
         return $this->dom->saveXML();
