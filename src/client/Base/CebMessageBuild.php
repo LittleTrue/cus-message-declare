@@ -71,6 +71,7 @@ trait CebMessageBuild
             'ceb:copName' => $enterprise['copName'],
             'ceb:dxpMode' => $enterprise['dxpMode'],
             'ceb:dxpId'   => $enterprise['dxpId'],
+            'ceb:note'    => $enterprise['note'],
         ];
 
         $base_transfer = $this->dom->createElement('ceb:BaseTransfer');
