@@ -107,9 +107,9 @@ class Client extends BaseClient
             throw new ClientError('报文传输配置, 贸易模式未设置。');
         }
 
-        $this->credentialValidate->setRule($rule);
+        // $this->credentialValidate->setRule($rule);
 
-        if (!$this->credentialValidate->check($declareConfig)) {
+        if (!$this->credentialValidate->check($declareConfig, $rule)) {
             throw new ClientError('报文传输配置' . $this->credentialValidate->getError());
         }
 
@@ -241,14 +241,14 @@ class Client extends BaseClient
                 'ceb:gname'  => $vv['GoodsName'],
                 'ceb:gmodel' => $vv['GoodsStyle'], //待补充
 
-                'ceb:barCode'  => $vv['BarCode'],
-                'ceb:country'  => $vv['OriginCountry'],
-                'ceb:tradeCountry'=> '142',
-                'ceb:currency' => $this->currency,
-                'ceb:qty'      => $vv['GoodsNumber'],
-                'ceb:unit'     => $vv['GUnit'], //成交计量单位
-                'ceb:qty1'     => $vv['UnitSum1'] * $vv['GoodsNumber'],
-                'ceb:unit1'    => $vv['StdUnit'],
+                'ceb:barCode'      => $vv['BarCode'],
+                'ceb:country'      => $vv['OriginCountry'],
+                'ceb:tradeCountry' => '142',
+                'ceb:currency'     => $this->currency,
+                'ceb:qty'          => $vv['GoodsNumber'],
+                'ceb:unit'         => $vv['GUnit'], //成交计量单位
+                'ceb:qty1'         => $vv['UnitSum1'] * $vv['GoodsNumber'],
+                'ceb:unit1'        => $vv['StdUnit'],
 
                 'ceb:qty2'  => empty($vv['UnitSum2'] * $vv['GoodsNumber']) ? '' : ($vv['UnitSum2'] * $vv['GoodsNumber']),
                 'ceb:unit2' => empty($vv['SecUnit']) ? '' : $vv['SecUnit'],
@@ -287,7 +287,7 @@ class Client extends BaseClient
     /**
      * 定义验证器来校验清单和清单商品信息.
      */
-    public function checkInfo($checklistInfo)
+    public function checkInfo($checklistInfo, $checklistGoods)
     {
         //根据不同的贸易模式, 区分验证规则
         $rules = [
@@ -305,18 +305,43 @@ class Client extends BaseClient
             //运输方式
             'ceb:trafMode' => 'require|max:4',
 
-            'ceb:country'     => 'require|max:4',
+            'ceb:country'     => 'require|max:4|gt:0',
             'ceb:freight'     => 'require|number',
             'ceb:insuredFee'  => 'require|number',
             'ceb:wrapType'    => 'require|max:4',
-            'ceb:grossWeight' => 'require|number',
-            'ceb:netWeight'   => 'require|number',
+            'ceb:grossWeight' => 'require|number|gt:0',
+            'ceb:netWeight'   => 'require|number|gt:0',
         ];
 
-        $this->credentialValidate->setRule($rules);
-
-        if (!$this->credentialValidate->check($checklistInfo)) {
+        if (!$this->credentialValidate->check($checklistInfo, $rules)) {
             throw new ClientError('报文清单数据: ' . $this->credentialValidate->getError());
+        }
+
+        $goods_rules = [
+            'ceb:gnum'         => 'require|max:60|gt:0',
+            'ceb:itemRecordNo' => 'require|max:20',
+            'ceb:itemNo'       => 'require|max:20',
+            'ceb:itemName'     => 'require|max:60',
+            'ceb:gcode'        => 'require|max:30',
+            'ceb:gname'        => 'require|max:200',
+            'ceb:gmodel'       => 'require|max:4',
+            'ceb:barCode'      => 'require|max:4|gt:0',
+            'ceb:country'      => 'require|number|gt:0',
+            // 'ceb:tradeCountry' => 'require|number|gt:0',
+            'ceb:currency'   => 'require|max:4|gt:0',
+            'ceb:qty'        => 'require|number|gt:0',
+            'ceb:unit'       => 'require|number',
+            'ceb:qty1'       => 'require|number|gt:0',
+            'ceb:unit1'      => 'require|number',
+            'ceb:price'      => 'require|number|gt:0',
+            'ceb:totalPrice' => 'require|number|gt:0',
+        ];
+
+        //校验商品数据
+        foreach ($checklistGoods as $key => $value) {
+            if (!$this->credentialValidate->check($value, $goods_rules)) {
+                throw new ClientError('报文清单商品数据: ' . $this->credentialValidate->getError());
+            }
         }
 
         return true;
