@@ -307,10 +307,10 @@ class Client extends BaseClient
 
             'ceb:country'     => 'require|max:4|gt:0',
             'ceb:freight'     => 'require|number',
-            'ceb:insuredFee'  => 'require|number',
+            // 'ceb:insuredFee'  => 'require|number',
             'ceb:wrapType'    => 'require|max:4',
-            'ceb:grossWeight' => 'require|number|gt:0',
-            'ceb:netWeight'   => 'require|number|gt:0',
+            'ceb:grossWeight' => 'require|gt:0',
+            'ceb:netWeight'   => 'require|gt:0',
         ];
 
         if (!$this->credentialValidate->check($checklistInfo, $rules)) {
@@ -324,17 +324,17 @@ class Client extends BaseClient
             'ceb:itemName'     => 'require|max:60',
             'ceb:gcode'        => 'require|max:30',
             'ceb:gname'        => 'require|max:200',
-            'ceb:gmodel'       => 'require|max:4',
-            'ceb:barCode'      => 'require|max:4|gt:0',
+            'ceb:gmodel'       => 'require',
+            'ceb:barCode'      => 'require|gt:0',
             'ceb:country'      => 'require|number|gt:0',
             // 'ceb:tradeCountry' => 'require|number|gt:0',
             'ceb:currency'   => 'require|max:4|gt:0',
             'ceb:qty'        => 'require|number|gt:0',
             'ceb:unit'       => 'require|number',
-            'ceb:qty1'       => 'require|number|gt:0',
+            'ceb:qty1'       => 'require|gt:0',
             'ceb:unit1'      => 'require|number',
-            'ceb:price'      => 'require|number|gt:0',
-            'ceb:totalPrice' => 'require|number|gt:0',
+            'ceb:price'      => 'require|gt:0',
+            'ceb:totalPrice' => 'require|gt:0',
         ];
 
         //校验商品数据
