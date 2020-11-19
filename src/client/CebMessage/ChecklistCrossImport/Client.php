@@ -67,7 +67,7 @@ class Client extends BaseClient
             'IEPort'      => 'require|max:4',
 
             'TradeMode' => 'require|max:4',
-            'SvPCode'   => 'require|max:10',
+            'SvPCode'   => 'max:10',
 
             'DeclEntNo'    => 'require|max:18',
             'DeclEntName'  => 'require|max:100',
