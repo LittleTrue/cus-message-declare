@@ -136,11 +136,11 @@ class Client extends BaseClient
                     throw new ClientError('修改报文, 海关单据号invtNo和预录入号preNo信息必填。');
                 }
             } else {
-                $this->sendTime = date('YmdHis', time());
+                $this->sendTime = (isset($declareConfig['SendTime']) && !empty($declareConfig['SendTime'])) ? date('YmdHis', $declareConfig['SendTime']) : date('YmdHis', time());
             }
             $this->opType = $declareConfig['OpType'];
         } else {
-            $this->sendTime = date('YmdHis', time());
+            $this->sendTime = (isset($declareConfig['SendTime']) && !empty($declareConfig['SendTime'])) ? date('YmdHis', $declareConfig['SendTime']) : date('YmdHis', time());
 
             $this->opType = 1;
         }
