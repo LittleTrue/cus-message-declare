@@ -23,4 +23,4 @@ PayReceiveCrossExportService 海关直连总署 - CEB报文 - 出口收款单申
 SummaryBillExportService 海关直连总署 - CEB报文 - 出口汇总单.
 TransportBillExportService 海关直连总署 - CEB报文 - 出口运单申报
 TransportBillImportService 海关直连总署 - CEB报文 - 进口运单申报
-WayBillExportService 海关直连总署 - CEB报文 - 出口清单总分单
+TotalDeclareListExportService 海关直连总署 - CEB报文 - 出口清单总分单
