@@ -35,13 +35,13 @@ class Client extends BaseClient
     }
 
     /**
-     * 出口运单申报.
+     * 顺丰出口运单申报.
      */
-    public function generateXmlPost($declareConfig, $declareParams)
+    public function generateFormPost($declareConfig, $declareParams)
     {
         $rule = [
-            'head'         => 'require',
-            'opt_type'     => 'require',
+            'head'     => 'require',
+            'opt_type' => 'require',
         ];
 
         $this->credentialValidate->setRule($rule);
@@ -73,62 +73,71 @@ class Client extends BaseClient
      */
     public function checkInfo($LogisticsEle)
     {
-        $rules = [
-            
-        ];
-
-        $this->credentialValidate->setRule($rules);
-
-        if (!$this->credentialValidate->check($LogisticsEle)) {
-            throw new ClientError('运单数据: ' . $this->credentialValidate->getError());
-        }
-
-        return true;
     }
 
     //生成进口运单申报报文
     public function generateFreight($declareConfig, $declareParams)
     {
-        //根节点生成--父类
-        $this->dom = new \DomDocument('1.0', 'UTF-8');
-        $root_node = $this->dom->createElement('Request');
-        $root_node->setAttribute('service','apiOrderService');
-        $root_node->setAttribute('lang','zh_CN');
-        $this->dom->appendchild($root_node);
+        $param = [
+            'partnerID'   => $declareConfig['partnerID'],
+            'requestID'   => microtime(),
+            'serviceCode' => 'EXP_RECE_CREATE_ORDER',
+            'timestamp'   => $declareConfig['timestamp'],
+        ];
 
-        //组装头部
-        $this->nodeLink['root_node'] = $root_node;
-        $head                        = $this->dom->createElement('Head');
-        $this->nodeLink['root_node']->appendchild($head);
-        $zhi = $this->dom->createTextNode($declareConfig['head']);
-        $head->appendchild($zhi);
+        $order = [
+            'language'          => 'zh-CN',
+            'orderId'           => $declareParams['orderId'],
+            'monthlyCard'       => $declareConfig['monthly_card'],
+        ];
 
-        $body_node = $this->dom->createElement('Body');
-        $this->nodeLink['root_node']->appendchild($body_node);
+        // 收件，寄件方信息
+        $contactInfoList = [
+            [
+                'contactType' => 1, // 寄件方
+                'company'     => $declareParams['j_contact'],
+                'contact'     => $declareParams['j_contact'],
+                'tel'         => $declareParams['j_tel'],
+                'zoneCode'    => $declareParams['j_country'],
+                'country'     => $declareParams['j_country'],
+                'address'     => $declareParams['j_address'],
+                'postCode'    => $declareParams['j_post_code'],
+            ],
+            [
+                'contactType' => 2, // 到件方
+                'contact'     => $declareParams['d_contact'],
+                'tel'         => $declareParams['d_tel'],
+                'zoneCode'    => $declareParams['d_country'],
+                'country'     => $declareParams['d_country'],
+                'address'     => $declareParams['d_address'],
+                'postCode'    => $declareParams['d_post_code'],
+            ],
+        ];
 
-        $order_node = $this->dom->createElement('Order');
-        $body_node->appendchild($order_node);
-
-        // 订单信息作为节点属性
-        foreach ($declareParams as $key => $value) {
-            if ('Cargo' == $key) {
-                continue;
-            }
-
-            $order_node->setAttribute($key, $value);
+        foreach ($declareParams['Cargo'] as $value) {
+            $CargoDetail[] = [
+                'name'            => $value['name'],
+                'count'           => $value['count'],
+                'unit'            => $value['unit'],
+                'weight'          => $value['weight'],
+                'amount'          => $value['amount'],
+                'currency'        => $value['currency'],
+                'sourceArea'      => $value['source_area'],
+            ];
         }
 
-        foreach ($declareParams['Cargo'] as $goods) {
-            $Cargo = $this->dom->createElement('Cargo');
-            $order_node->appendchild($Cargo);
+        $order['cargoDetails'] = $CargoDetail;
+        $order['contactInfoList'] = $contactInfoList;
 
-            // 商品节点添加属性
-            foreach ($goods as $k => $v) {
-                $Cargo->setAttribute($k, $v);
-            }
-        }
+        // 
+        $msgData = json_encode($order, JSON_UNESCAPED_UNICODE);
+        $param['msgDigest'] = $this->sign($msgData, $declareConfig['check_word'], $declareConfig['timestamp']);
 
-        return $this->dom->saveXML();
+        $param['msgData'] = $msgData;
+
+        // 签名
+// var_dump($param);die();
+        return $param;
     }
 
     /**
@@ -136,62 +145,170 @@ class Client extends BaseClient
      */
     public function freightCheck($declareConfig, $declareParams)
     {
-        //根节点生成--父类
-        $this->dom = new \DomDocument('1.0', 'UTF-8');
-        $root_node = $this->dom->createElement('Request');
-        $root_node->setAttribute('service','OrderSearchService');
-        $root_node->setAttribute('lang','zh_CN');
-        $this->dom->appendchild($root_node);
+        $param = [
+            'partnerID'   => $declareConfig['partnerID'],
+            'requestID'   => microtime(),
+            'serviceCode' => 'EXP_RECE_SEARCH_ORDER_RESP',
+            'timestamp'   => $declareConfig['timestamp'],
+        ];
 
-        //组装头部
-        $this->nodeLink['root_node'] = $root_node;
-        $head                        = $this->dom->createElement('Head');
-        $this->nodeLink['root_node']->appendchild($head);
-        $zhi = $this->dom->createTextNode($declareConfig['head']);
-        $head->appendchild($zhi);
+        $order = [
+            'language'          => 'zh-CN',
+            'orderId'           => $declareParams['orderId'],
+        ];
 
-        $body_node = $this->dom->createElement('Body');
-        $this->nodeLink['root_node']->appendchild($body_node);
+        $msgData = json_encode($order, JSON_UNESCAPED_UNICODE);
 
-        $order_node = $this->dom->createElement('OrderSearch');
-        $body_node->appendchild($order_node);
+        $param['msgData'] = $msgData;
 
-        foreach ($declareParams as $key => $value) {
-            $order_node->setAttribute($key, $value);
-        }
+        // 签名
+        $param['msgDigest'] = $this->sign($msgData, $declareConfig['check_word'], $declareConfig['timestamp']);
 
-        return $this->dom->saveXML();
+        return $param;
     }
 
     /**
-     * 运单申报取消
+     * 运单申报确认\取消
      */
     public function freightCancel($declareConfig, $declareParams)
     {
-        //根节点生成--父类
-        $this->dom = new \DomDocument('1.0', 'UTF-8');
-        $root_node = $this->dom->createElement('Request');
-        $root_node->setAttribute('service','CancelOrderService');
-        $root_node->setAttribute('lang','zh_CN');
-        $this->dom->appendchild($root_node);
+        $param = [
+            'partnerID'   => $declareConfig['partnerID'],
+            'requestID'   => '12121212121212121',
+            'serviceCode' => 'EXP_RECE_UPDATE_ORDER',
+            'timestamp'   => $declareConfig['timestamp'],
+        ];
 
-        //组装头部
-        $this->nodeLink['root_node'] = $root_node;
-        $head                        = $this->dom->createElement('Head');
-        $this->nodeLink['root_node']->appendchild($head);
-        $zhi = $this->dom->createTextNode($declareConfig['head']);
-        $head->appendchild($zhi);
+        $order = [
+            'orderId'   => $declareParams['orderId'],
+            'dealType'  => $declareParams['dealType'], // 1 确认  2 取消
+            'waybillNoInfoList'  => 1 == $declareParams['dealType'] ? [
+                'waybillType' => 1,
+                'waybillNo'   => $declareParams['waybillNo']
+            ] : null,
+        ];
 
-        $body_node = $this->dom->createElement('Body');
-        $this->nodeLink['root_node']->appendchild($body_node);
+        $msgData = json_encode($order, JSON_UNESCAPED_UNICODE);
 
-        $order_node = $this->dom->createElement('CancelOrder');
-        $body_node->appendchild($order_node);
+        $param['msgData'] = $msgData;
 
-        foreach ($declareParams as $key => $value) {
-            $order_node->setAttribute($key, $value);
-        }
+        // 签名
+        $param['msgDigest'] = $this->sign($msgData, $declareConfig['check_word'], $declareConfig['timestamp']);
 
-        return $this->dom->saveXML();
+        return $param;
     }
+
+    private function sign($data, $key, $time)
+    {
+        return base64_encode(md5((urlencode($data .$time. $key)), TRUE));
+    }
+
+    // //生成进口运单申报报文
+    // public function generateFreight($declareConfig, $declareParams)
+    // {
+    //     //根节点生成--父类
+    //     $this->dom = new \DomDocument('1.0', 'UTF-8');
+    //     $root_node = $this->dom->createElement('Request');
+    //     $root_node->setAttribute('service','apiOrderService');
+    //     $root_node->setAttribute('lang','zh_CN');
+    //     $this->dom->appendchild($root_node);
+
+    //     //组装头部
+    //     $this->nodeLink['root_node'] = $root_node;
+    //     $head                        = $this->dom->createElement('Head');
+    //     $this->nodeLink['root_node']->appendchild($head);
+    //     $zhi = $this->dom->createTextNode($declareConfig['head']);
+    //     $head->appendchild($zhi);
+
+    //     $body_node = $this->dom->createElement('Body');
+    //     $this->nodeLink['root_node']->appendchild($body_node);
+
+    //     $order_node = $this->dom->createElement('Order');
+    //     $body_node->appendchild($order_node);
+
+    //     // 订单信息作为节点属性
+    //     foreach ($declareParams as $key => $value) {
+    //         if ('Cargo' == $key) {
+    //             continue;
+    //         }
+
+    //         $order_node->setAttribute($key, $value);
+    //     }
+
+    //     foreach ($declareParams['Cargo'] as $goods) {
+    //         $Cargo = $this->dom->createElement('Cargo');
+    //         $order_node->appendchild($Cargo);
+
+    //         // 商品节点添加属性
+    //         foreach ($goods as $k => $v) {
+    //             $Cargo->setAttribute($k, $v);
+    //         }
+    //     }
+
+    //     return $this->dom->saveXML();
+    // }
+
+    // /**
+    //  * 查询运单申报状态
+    //  */
+    // public function freightCheck($declareConfig, $declareParams)
+    // {
+    //     //根节点生成--父类
+    //     $this->dom = new \DomDocument('1.0', 'UTF-8');
+    //     $root_node = $this->dom->createElement('Request');
+    //     $root_node->setAttribute('service','OrderSearchService');
+    //     $root_node->setAttribute('lang','zh_CN');
+    //     $this->dom->appendchild($root_node);
+
+    //     //组装头部
+    //     $this->nodeLink['root_node'] = $root_node;
+    //     $head                        = $this->dom->createElement('Head');
+    //     $this->nodeLink['root_node']->appendchild($head);
+    //     $zhi = $this->dom->createTextNode($declareConfig['head']);
+    //     $head->appendchild($zhi);
+
+    //     $body_node = $this->dom->createElement('Body');
+    //     $this->nodeLink['root_node']->appendchild($body_node);
+
+    //     $order_node = $this->dom->createElement('OrderSearch');
+    //     $body_node->appendchild($order_node);
+
+    //     foreach ($declareParams as $key => $value) {
+    //         $order_node->setAttribute($key, $value);
+    //     }
+
+    //     return $this->dom->saveXML();
+    // }
+
+    // /**
+    //  * 运单申报取消
+    //  */
+    // public function freightCancel($declareConfig, $declareParams)
+    // {
+    //     //根节点生成--父类
+    //     $this->dom = new \DomDocument('1.0', 'UTF-8');
+    //     $root_node = $this->dom->createElement('Request');
+    //     $root_node->setAttribute('service','CancelOrderService');
+    //     $root_node->setAttribute('lang','zh_CN');
+    //     $this->dom->appendchild($root_node);
+
+    //     //组装头部
+    //     $this->nodeLink['root_node'] = $root_node;
+    //     $head                        = $this->dom->createElement('Head');
+    //     $this->nodeLink['root_node']->appendchild($head);
+    //     $zhi = $this->dom->createTextNode($declareConfig['head']);
+    //     $head->appendchild($zhi);
+
+    //     $body_node = $this->dom->createElement('Body');
+    //     $this->nodeLink['root_node']->appendchild($body_node);
+
+    //     $order_node = $this->dom->createElement('CancelOrder');
+    //     $body_node->appendchild($order_node);
+
+    //     foreach ($declareParams as $key => $value) {
+    //         $order_node->setAttribute($key, $value);
+    //     }
+
+    //     return $this->dom->saveXML();
+    // }
 }
