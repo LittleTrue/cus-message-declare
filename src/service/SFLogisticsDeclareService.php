@@ -43,13 +43,13 @@ class SFLogisticsDeclareService
      * @throws ClientError
      * @throws \Exception
      */
-    public function generateXmlPost(array $declareConfig, array $declareParams)
+    public function generateFormPost(array $declareConfig, array $declareParams)
     {
         if (empty($declareConfig) || empty($declareParams)) {
             throw new ClientError('参数缺失', 1000001);
         }
 
-        return $this->_sfLogisticsDeclare->generateXmlPost($declareConfig, $declareParams);
+        return $this->_sfLogisticsDeclare->generateFormPost($declareConfig, $declareParams);
     }
 
     /**
@@ -65,7 +65,7 @@ class SFLogisticsDeclareService
             throw new ClientError('参数缺失', 1000001);
         }
 
-        $xml_data = $this->_transportBillExport->generateXmlPost($declareConfig, $declareParams);
+        $xml_data = $this->_transportBillExport->generateFormPost($declareConfig, $declareParams);
 
         return $this->_httpMessageDeclareClient->generateHttpDoc($this->_transportBillExport->messageType, $xml_data, $httpBase, $key);
     }
