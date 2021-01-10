@@ -325,7 +325,7 @@ class Client extends BaseClient
             'ceb:gcode'        => 'require|max:30',
             'ceb:gname'        => 'require|max:200',
             'ceb:gmodel'       => 'require',
-            'ceb:barCode'      => 'require|gt:0',
+            'ceb:barCode'      => 'max:55',
             'ceb:country'      => 'require|number|gt:0',
             // 'ceb:tradeCountry' => 'require|number|gt:0',
             'ceb:currency'   => 'require|max:4|gt:0',
