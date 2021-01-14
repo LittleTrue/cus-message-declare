@@ -57,16 +57,16 @@ class SFLogisticsDeclareService
      */
     public function generateHttpDoc(array $declareConfig, array $declareParams, array $httpBase, $key = '')
     {
-        if (empty($declareConfig) || empty($declareParams)) {
-            throw new ClientError('参数缺失', 1000001);
-        }
+        // if (empty($declareConfig) || empty($declareParams)) {
+        //     throw new ClientError('参数缺失', 1000001);
+        // }
 
-        if (empty($httpBase)) {
-            throw new ClientError('参数缺失', 1000001);
-        }
+        // if (empty($httpBase)) {
+        //     throw new ClientError('参数缺失', 1000001);
+        // }
 
-        $xml_data = $this->_transportBillExport->generateFormPost($declareConfig, $declareParams);
+        // $xml_data = $this->_transportBillExport->generateFormPost($declareConfig, $declareParams);
 
-        return $this->_httpMessageDeclareClient->generateHttpDoc($this->_transportBillExport->messageType, $xml_data, $httpBase, $key);
+        // return $this->_httpMessageDeclareClient->generateHttpDoc($this->_transportBillExport->messageType, $xml_data, $httpBase, $key);
     }
 }

@@ -130,7 +130,7 @@ class Client extends BaseClient
         $order['contactInfoList'] = $contactInfoList;
 
         // 
-        $msgData = json_encode($order, JSON_UNESCAPED_UNICODE);
+        $msgData = json_encode($order);
         $param['msgDigest'] = $this->sign($msgData, $declareConfig['check_word'], $declareConfig['timestamp']);
 
         $param['msgData'] = $msgData;
@@ -174,7 +174,7 @@ class Client extends BaseClient
     {
         $param = [
             'partnerID'   => $declareConfig['partnerID'],
-            'requestID'   => '12121212121212121',
+            'requestID'   => 'SF' . microtime() . rand(10,19),
             'serviceCode' => 'EXP_RECE_UPDATE_ORDER',
             'timestamp'   => $declareConfig['timestamp'],
         ];
