@@ -51,7 +51,7 @@ class Client extends BaseClient
             'DeclEntName'  => 'require|max:100',
             'DeclEntDxpid' => 'require|max:30',
 
-            'CustomsCode' => 'require|max:4',
+            // 'CustomsCode' => 'require|max:4',
         ];
 
         $this->credentialValidate->setRule($rule);
@@ -77,7 +77,7 @@ class Client extends BaseClient
                 'ceb:appType'     => $this->opType,
                 'ceb:appTime'     => $this->sendTime,
                 'ceb:appStatus'   => '2',
-                'ceb:customsCode' => $declareConfig['CustomsCode'],
+                'ceb:customsCode' => $value['CustomsCode'],
                 'ceb:copNo'       => $value['EntEListNo'],
                 'ceb:invtNo'      => $value['InvtNo'],
                 'ceb:reason'      => $value['Reason'],
