@@ -321,7 +321,7 @@ class Client extends BaseClient
             'ceb:gnum'         => 'require|max:60|gt:0',
             'ceb:itemRecordNo' => 'require|max:20',
             'ceb:itemNo'       => 'require|max:20',
-            'ceb:itemName'     => 'require|max:60',
+            //'ceb:itemName'     => 'require|max:60',
             'ceb:gcode'        => 'require|max:30',
             'ceb:gname'        => 'require|max:200',
             'ceb:gmodel'       => 'require',
