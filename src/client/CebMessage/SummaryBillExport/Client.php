@@ -96,6 +96,13 @@ class Client extends BaseClient
                 'ceb:msgCount'      => $head['MsgCount'],
                 'ceb:msgSeqNo'      => $head['MsgSeqNo'],
             ];
+            
+            if ( $this->opType == 2) {
+                //增加变更申报字段
+                $InventoryHeadEle['ceb:preNo'] = $head['preNo'];
+                $InventoryHeadEle['ceb:sumNo'] = $head['sumNo'];
+            }
+
 
             $this->dom = $this->createEle($SummaryApplyHeadEle, $this->dom, $SummaryApplyHead);
 
