@@ -174,6 +174,12 @@ class Client extends BaseClient
                 'ceb:note'           => empty($head['note']) ? '' : $head['note'],
             ];
 
+            if ($declareConfig['OpType'] == 2) {
+                  //增加变更申报字段
+                $InventoryHeadEle['ceb:preNo'] = $head['preNo'];
+                $InventoryHeadEle['ceb:invtNo'] = $head['invtNo'];
+            }
+
             $this->dom = $this->createEle($InventoryHeadEle, $this->dom, $InventoryHead);
 
             foreach ($list as $key => $value) {

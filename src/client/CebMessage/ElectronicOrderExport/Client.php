@@ -177,7 +177,7 @@ class Client extends BaseClient
         }
 
         if (!($this->floatCmp((string) round($goods_total, 2), (string) $order_head_ele['ceb:goodsValue']))) {
-            throw new ClientError('第' . $kk . '条' . '报文订单数据: 商品实际成交价与订单记录不符。');
+            throw new ClientError('订单:'.$order_head_ele['ceb:orderNo'] .'第' . $kk . '条' . '报文订单数据: 商品实际成交价与订单记录不符。');
         }
 
         return true;
