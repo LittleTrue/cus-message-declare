@@ -79,12 +79,15 @@ class Client extends BaseClient
             $this->nodeLink['SummaryApply']->appendchild($SummaryApplyHead);
 
             $SummaryApplyHeadEle = [
-                'ceb:guid'          => $declareConfig['MessageId'],
-                'ceb:appType'       => $this->opType,
-                'ceb:appTime'       => $this->sendTime,
-                'ceb:appStatus'     => $declareConfig['appStatus'],
-                'ceb:customsCode'   => $head['CustomsCode'],
-                'ceb:copNo'         => $head['EntEListNo'],
+                'ceb:guid'        => $declareConfig['MessageId'],
+                'ceb:appType'     => $this->opType,
+                'ceb:appTime'     => $this->sendTime,
+                'ceb:appStatus'   => $declareConfig['appStatus'],
+                'ceb:customsCode' => $head['CustomsCode'],
+                'ceb:copNo'       => $head['EntEListNo'],
+                'ceb:preNo'       => isset($head['preNo']) ? $head['preNo'] : '',
+                'ceb:sumNo'       => isset($head['sumNo']) ? $head['sumNo'] : '',
+
                 'ceb:agentCode'     => $head['DeclEntNo'],
                 'ceb:agentName'     => $head['DeclEntName'],
                 'ceb:ebcCode'       => $head['EBEntNo'],
@@ -96,13 +99,11 @@ class Client extends BaseClient
                 'ceb:msgCount'      => $head['MsgCount'],
                 'ceb:msgSeqNo'      => $head['MsgSeqNo'],
             ];
-            
-            if ( $this->opType == 2) {
-                //增加变更申报字段
-                $InventoryHeadEle['ceb:preNo'] = $head['preNo'];
-                $InventoryHeadEle['ceb:sumNo'] = $head['sumNo'];
-            }
 
+            if (1 == $this->opType) {
+                //增加变更申报字段
+                unset($InventoryHeadEle['ceb:preNo'], $InventoryHeadEle['ceb:sumNo']);
+            }
 
             $this->dom = $this->createEle($SummaryApplyHeadEle, $this->dom, $SummaryApplyHead);
 

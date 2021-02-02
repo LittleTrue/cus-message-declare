@@ -86,6 +86,7 @@ class Client extends BaseClient
                 'ceb:appStatus'      => $declareConfig['appStatus'],
                 'ceb:customsCode'    => $head['customs_code'],
                 'ceb:copNo'          => $head['cop_no'],
+                'ceb:preNo'          => isset($head['preNo']) ? $head['preNo'] : '',
                 'ceb:agentCode'      => $head['agent_code'],
                 'ceb:agentName'      => $head['agent_name'],
                 'ceb:loctNo'         => empty($head['loct_no']) ? '' : $head['loct_no'],
@@ -102,9 +103,9 @@ class Client extends BaseClient
                 'ceb:note'           => empty($head['note']) ? '' : $head['note'],
             ];
 
-            if ($declareConfig['OpType'] == 2) {
-                //增加变更申报字段
-                $InventoryHeadEle['ceb:preNo'] = $head['preNo'];
+            if (1 == $declareConfig['OpType']) {
+                //增加变更/删除申报字段
+                unset($InventoryHeadEle['ceb:preNo']);
             }
 
             $this->dom = $this->createEle($WayBillHeadEle, $this->dom, $WayBillHead);

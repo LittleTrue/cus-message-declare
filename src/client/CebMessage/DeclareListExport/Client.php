@@ -134,6 +134,9 @@ class Client extends BaseClient
 
                 'ceb:copNo' => $head['EntEListNo'],
 
+                'ceb:preNo'  => isset($head['preNo']) ? $head['preNo'] : '',
+                'ceb:invtNo' => isset($head['invtNo']) ? $head['invtNo'] : '',
+
                 'ceb:ieFlag'   => $this->ieFlag,
                 'ceb:portCode' => $head['IEPort'],
 
@@ -174,10 +177,9 @@ class Client extends BaseClient
                 'ceb:note'           => empty($head['note']) ? '' : $head['note'],
             ];
 
-            if ($declareConfig['OpType'] == 2) {
-                  //增加变更申报字段
-                $InventoryHeadEle['ceb:preNo'] = $head['preNo'];
-                $InventoryHeadEle['ceb:invtNo'] = $head['invtNo'];
+            if (1 == $declareConfig['OpType']) {
+                //增加变更/删除申报字段
+                unset($InventoryHeadEle['ceb:preNo'], $InventoryHeadEle['ceb:invtNo']);
             }
 
             $this->dom = $this->createEle($InventoryHeadEle, $this->dom, $InventoryHead);
