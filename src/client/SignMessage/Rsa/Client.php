@@ -33,7 +33,6 @@ class Client extends BaseClient
         );
 
         $objKey = new XMLSecurityKey(XMLSecurityKey::RSA_SHA1, ['type' => 'private']);
-        // $private_path = $this->keyFolder;
         $objKey->loadKey($key, false);
 
         $objDSig->sign($objKey, $doc->documentElement);

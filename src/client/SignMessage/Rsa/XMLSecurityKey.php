@@ -316,11 +316,17 @@ class XMLSecurityKey
      */
     public function loadKey($key, $isFile = false, $isCert = false)
     {
+        //判断是否文件
+        if (is_file($this->key)) {
+            $this->key = file_get_contents($key);
+        }
+        
         if ($isFile) {
             $this->key = file_get_contents($key);
         } else {
             $this->key = $key;
         }
+        
         if ($isCert) {
             $this->key = openssl_x509_read($this->key);
             openssl_x509_export($this->key, $str_cert);
