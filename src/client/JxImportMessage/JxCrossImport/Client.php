@@ -85,7 +85,6 @@ class Client extends BaseClient
         $jkfOrderImportHeadData = [
             'companyCode' => $declareConfig['EBPEntNo'],
             'companyName' => $declareConfig['EBPEntName'],
-            'companyCode' =>'',
             'eCommerceCode' => $declareConfig['EBEntNo'], //电商企业编号
             'eCommerceName' => $declareConfig['EBEntName'], //电商企业名称
             'ieFlag' => 'I',
@@ -164,8 +163,8 @@ class Client extends BaseClient
         $this->dom = $this->createEle($jkfGoodsPurchaserData, $this->dom, $jkfGoodsPurchaser);
 
         // $this->dom->formatOutput = true;
-        $xml_string = trim($this->dom->saveXML(), ''); 
-        // var_dump($xml_string);
+        $xml_string = $this->dom->saveXML();     
+
         return [
             'content'=>$this->aesEncrypt($xml_string),
             'msgType'=>$this->businessType,
