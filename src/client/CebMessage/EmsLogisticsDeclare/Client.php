@@ -60,6 +60,9 @@ class Client extends BaseClient
             case 'logistics_declare':
                 $result = $this->generateFreight($declareConfig, $declareParams);
                 break;
+            case 'jx_logistics_declare':
+                $result = $this->generateJxFreight($declareConfig, $declareParams);
+                break;
             case 'logistics_check':
                 $result = $this->freightCheck($declareConfig, $declareParams);
                 break;
@@ -83,25 +86,56 @@ class Client extends BaseClient
     public function checkInfo($LogisticsEle)
     {
         $rules = [
-            'appType'            => 'require',
-            'appTime'            => 'require',
-            'appStatus'          => 'require',
-            'logisticsCode'      => 'require',
-            'logisticsName'      => 'require',
-            'logisticsNo'        => 'require',
-            'billNo'             => 'require',
-            'freight'            => 'require',
-            'insuredFee'         => 'require',
-            'currency'           => 'require',
-            'weight'             => 'require',
-            'packNo'             => 'require',
+            'appType'       => 'require',
+            'appTime'       => 'require',
+            'appStatus'     => 'require',
+            'logisticsCode' => 'require',
+            'logisticsName' => 'require',
+            'logisticsNo'   => 'require',
+            'billNo'        => 'require',
+            'freight'       => 'require',
+            'insuredFee'    => 'require',
+            'currency'      => 'require',
+            'weight'        => 'require',
+            'packNo'        => 'require',
             // 'goodsInfo'          => '',
             'consignee'          => 'require',
             'consigneeAddress'   => 'require',
             'consigneeTelephone' => 'require',
             // 'note'               => '',
-            'orderNo'            => 'require',
-            'ebpCode'            => 'require',
+            'orderNo' => 'require',
+            'ebpCode' => 'require',
+        ];
+
+        $this->credentialValidate->setRule($rules);
+
+        if (!$this->credentialValidate->check($LogisticsEle)) {
+            throw new ClientError('运单数据: ' . $this->credentialValidate->getError());
+        }
+
+        return true;
+    }
+    /**
+     * 定义验证器来校验清单和清单商品信息.
+     */
+    public function checkJxInfo($LogisticsEle)
+    {
+        $rules = [
+            'appType'       => 'require',
+            'appTime'       => 'require',
+            'logisticsCode' => 'require',
+            'logisticsName' => 'require',
+            'logisticsNo'   => 'require',
+            'freight'       => 'require',
+            'insuredFee'    => 'require',
+            'currency'      => 'require',
+            'weight'        => 'require',
+            'packNo'        => 'require',
+            'consignee'          => 'require',
+            'consigneeAddress'   => 'require',
+            'consigneeTelephone' => 'require',
+            'orderNo' => 'require',
+            'ebpCode' => 'require',
         ];
 
         $this->credentialValidate->setRule($rules);
@@ -183,6 +217,79 @@ class Client extends BaseClient
 
             //验证数据
             $this->checkInfo($FreightEle);
+        }
+
+        return $this->dom->saveXML();
+    }
+
+    //生成进口运单申报报文
+    public function generateJxFreight($declareConfig, $declareParams)
+    {
+        //根节点生成--父类
+        $this->dom = new \DomDocument('1.0', 'UTF-8');
+        $root_node = $this->dom->createElement('Manifest');
+        $this->dom->appendchild($root_node);
+
+        //组装头部
+        $this->nodeLink['root_node'] = $root_node;
+        $head                        = $this->dom->createElement('Head');
+        $this->nodeLink['root_node']->appendchild($head);
+
+        $HeadEle = [
+            'MessageID'    => $declareConfig['MessageID'],
+            'FunctionCode' => $declareConfig['FunctionCode'],
+            'MessageType'  => $declareConfig['MessageType'],
+            'SenderID'     => $declareConfig['SenderID'],
+            'ReceiverID'   => $declareConfig['ReceiverID'],
+            'SendTime'     => $declareConfig['SendTime'],
+            'Version'      => $declareConfig['Version'],
+        ];
+
+        $this->dom = $this->createEle($HeadEle, $this->dom, $head);
+
+        $declaration_node = $this->dom->createElement('Declaration');
+        $this->nodeLink['root_node']->appendchild($declaration_node);
+
+        $freight_node = $this->dom->createElement('Freights');
+        $declaration_node->appendchild($freight_node);
+
+        //一个报文可以又多个订单
+        foreach ($declareParams as $key => $value) {
+            $Freight = $this->dom->createElement('Freight');
+            $freight_node->appendchild($Freight);
+            $this->nodeLink['Freights'] = $Freight;
+
+            $FreightEle = [
+                'appType'            => $value['appType'],
+                'appTime'            => $value['appTime'],
+                'logisticsCode'      => $value['logisticsCode'],
+                'logisticsName'      => $value['logisticsName'],
+                'logisticsNo'        => $value['logisticsNo'],
+                'freight'            => $value['freight'],
+                'insuredFee'         => $value['insuredFee'],
+                'currency'           => $value['currency'],
+                'weight'             => $value['weight'],
+                'packNo'             => $value['packNo'],
+                'goodsInfo'          => $value['goodsInfo'],
+                'consignee'          => $value['consignee'],
+                'consigneeAddress'   => $value['consigneeAddress'],
+                'consigneeTelephone' => $value['consigneeTelephone'],
+                'note'               => $value['note'],
+                'orderNo'            => $value['orderNo'],
+                'ebpCode'            => $value['ebpCode'],
+            ];
+
+            $this->dom = $this->createEle($FreightEle, $this->dom, $Freight);
+
+            $KzInfo_node = $this->dom->createElement('KzInfo');
+            $this->nodeLink['Freights']->appendchild($KzInfo_node);
+
+            $KzInfoEle = $value['KzInfo'];
+
+            $this->dom = $this->createEle($KzInfoEle, $this->dom, $KzInfo_node);
+
+            //验证数据
+            $this->checkJxInfo($FreightEle);
         }
 
         return $this->dom->saveXML();
