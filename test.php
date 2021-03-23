@@ -411,10 +411,112 @@ $declareParams = [
 // ];
 
 //出口电子订单申报
+// $customsTradePostFactory = new CustomsTradePostFactory();
+// $obj                     = $customsTradePostFactory->getInstance('SFLogisticsDeclareService', $ioc_con_app);
+// try {
+//     $test_xml = $obj->generateXmlPost($declareConfig, $declareParams);//print_r($test_xml);die();
+//     $sign = base64_encode(md5($test_xml . 'fc34c561a34f'));
+//     $ele = [
+//         'validateStr' => $sign,
+//         'customerCode' => 'OSMS_1'
+//     ];
+//     $r = sendOut('http://osms.sit.sf-express.com:2080/osms/services/OrderWebService?wsdl', 'apiOrderService', base64_encode($test_xml), $ele);;
+//     var_dump($r);
+//     die();
+// } catch (\Exception $e) {
+//     var_dump($e->getMessage());
+// }
+// // $test_xml2 = $SummaryBill->generateHttpDoc($declareConfig, $declareParams, $httpBase, $key);
+
+// // var_dump($test_xml2);
+// die();
+
+
+
+
+
+// //发送消息
+// function sendOut($url, $func, $data, $info)
+// {
+//     $soap = new \SoapClient($url);
+// // var_dump($soap);die();
+//     switch ($func) {
+//         // case 'queryMailTrack':
+//         //     $param = ['in0' => $info['user'], 'in1' => $info['pwd'], 'in2' => $info['mailNo']];
+//         //     $response = $soap->queryMailTrack($param);
+//         //     break;
+//         case 'apiOrderService':
+//             $param = ['data' => $data, 'validateStr' => $info['validateStr'], 'customerCode' => $info['customerCode']];
+//             // print_r($info['validateStr']);die();
+//             $response = $soap->sfexpressService($param);
+//         default:
+//             break;
+//     }
+//     return $response->Return;
+// }
+
+//江西综服进口订单申报
 $customsTradePostFactory = new CustomsTradePostFactory();
-$obj                     = $customsTradePostFactory->getInstance('SFLogisticsDeclareService', $ioc_con_app);
+$obj = $customsTradePostFactory->getInstance('JxCrossImportService', $ioc_con_app);
+
+$declareConfig = [
+    'businessNo' => '11111111111',
+    'OpType' => '1',
+    'EBPEntNo' => '222222', //电商平台在跨境电商综合服务平台的备案名称
+    'EBPEntName' => '123123', //电商平台在跨境电商综合服务的备案编号
+    'EBEntNo' => '123123',//电商企业编码
+    'EBEntName' => '112312323',//电商企业名称
+];
+
+$declareParams = [
+    'order_info' => [
+        'payType' => '03',
+        'payCompanyCode' => '1233123',
+        'payCompanyName' => '招行',
+        'payNumber' => '3333333333333333',
+        'orderTotalAmount' => 100,
+        'EntOrderNo' => '123232323',
+        'Tax' => 0,
+        'OrderGoodTotal' =>100,
+        // 'feeAmount' => '', //非必
+        'insureAmount' => 0,
+        'tradeTime' => '1611236888',
+        'currCode' =>'142',
+        // 'totalAmount' => '',
+        // 'consigneeEmail' => '',
+        'RecipientTel' => '13424499957',
+        'RecipientName' => '杨斯祺',
+        'RecipientAddr' => '浙江省杭州市下城区石桥街道 元都新景公寓16号2单元1301',
+        'totalCount' => 1,
+        // 'postMode' => '',
+        'senderCountry' => '142',
+        'senderName' => 'Tony',
+        'OrderDocAcount' => 'bbbiit',
+        'logisCompanyName' => '江西省邮政快递服务有限公司',
+        'logisCompanyCode' => '3601984979',
+        // 'zipCode' => '',
+        // 'wayBills' =>'',
+        // 'rate' =>'',
+        'OtherPayment' => 0,
+    ],
+    'goods_info' => [
+        [
+            'GoodsName' => '化妆水',
+            'SKU' => '9969696900',
+            'GoodsStyle' => '100ml',
+            'OriginCountry' => '中国',
+            'RegPrice' => 100,
+            'currency' => '142',
+            'GoodsNumber' => 1,
+            'GUnit' => '311',
+            'BarCode' => '898989898989',
+        ]
+    ]
+];
+
 try {
-    $test_xml = $obj->generateXmlPost($declareConfig, $declareParams);//print_r($test_xml);die();
+    $test_xml = $obj->generateOrderXmlPost($declareConfig, $declareParams);
+    print_r($test_xml);die();
     $sign = base64_encode(md5($test_xml . 'fc34c561a34f'));
     $ele = [
         'validateStr' => $sign,
@@ -430,29 +532,3 @@ try {
 
 // var_dump($test_xml2);
 die();
-
-
-
-
-
-
-
-//发送消息
-function sendOut($url, $func, $data, $info)
-{
-    $soap = new \SoapClient($url);
-// var_dump($soap);die();
-    switch ($func) {
-        // case 'queryMailTrack':
-        //     $param = ['in0' => $info['user'], 'in1' => $info['pwd'], 'in2' => $info['mailNo']];
-        //     $response = $soap->queryMailTrack($param);
-        //     break;
-        case 'apiOrderService':
-            $param = ['data' => $data, 'validateStr' => $info['validateStr'], 'customerCode' => $info['customerCode']];
-            // print_r($info['validateStr']);die();
-            $response = $soap->sfexpressService($param);
-        default:
-            break;
-    }
-    return $response->Return;
-}

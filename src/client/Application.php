@@ -38,6 +38,8 @@ class Application extends Container
         GzWindowKjMessage\GoodsLoadCross\ServiceProvider::class,
         SignMessage\Rsa\ServiceProvider::class,
         GzWindowKjMessage\HttpMessageDeclare\ServiceProvider::class,
+        JxImportMessage\JxCrossImport\ServiceProvider::class,
+        JxImportMessage\JxImportList\ServiceProvider::class,
     ];
 
     /**
