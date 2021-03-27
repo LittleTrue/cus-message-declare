@@ -44,11 +44,9 @@ class Client extends BaseClient
         $this->nodeLink['body']->appendchild($goodsDeclareModuleList);
 
         foreach ($declareParams as $key => $declareItem) {
-            //检查订单头参数
-            $this->checkHead($order_data);
+            $order_data = $declareParams['order_info'];
+            $goods_data = $declareParams['goods_info'];
 
-            $order_data         = $declareParams['order_info'];
-            $goods_data         = $declareParams['goods_info'];
             $goodsDeclareModule = $this->dom->createElement('goodsDeclareModule');
             $goodsDeclareModuleList->appendchild($goodsDeclareModule);
 
@@ -56,10 +54,10 @@ class Client extends BaseClient
             $goodsDeclareModule->appendchild($jkfSign);
 
             $jkfSignData = [
-                'companyCode'  => $declareConfig['EBPEntNo'],
+                'companyCode'  => $declareConfig['companyCode'],
                 'businessNo'   => $order_data['businessNo'],
                 'businessType' => $this->businessType,
-                'declareType'  => $declareConfig['OpType'],
+                'declareType'  => $declareConfig['declareType'],
                 'cebFlag'      => '03',
                 'note'         => '',
             ];
@@ -70,27 +68,27 @@ class Client extends BaseClient
             $goodsDeclareModule->appendchild($goodsDeclare);
 
             $goodsDeclareData = [
-                'accountBookNo'           => '', //非必
+                'accountBookNo'           => $order_data['accountBookNo'], //非必
                 'ieFlag'                  => 'I',
                 'preEntryNumber'          => $order_data['preEntryNumber'], //4位电商编号+14位企业流水
                 'importType'              => $declareConfig['importType'], //监管方式
-                'inOutDateStr'            => $order_data['inOutDateStr'],
+                'inOutDateStr'            => date('Y-m-d H:i:s', $order_data['inOutDateStr']),
                 'iePort'                  => $declareConfig['iePort'], //口岸代码表
                 'destinationPort'         => $order_data['destinationPort'],
                 'trafName'                => $order_data['trafName'], //运输工具名称，非必
                 'voyageNo'                => $order_data['voyageNo'], //航班航次号，非必
                 'trafNo'                  => $order_data['trafNo'], //运输工具编号，非必
                 'trafMode'                => $order_data['trafMode'], //运输方式
-                'declareCompanyType'      => $declareConfig['DeclareCompanyType'], //申报单位类别
-                'declareCompanyCode'      => $declareConfig['DeclEntNo'], //申报企业代码
-                'declareCompanyName'      => $declareConfig['DeclEntName'], //申报企业名称
-                'companyName'             => $declareConfig['EBPEntName'], //电商平台名称
-                'companyCode'             => $declareConfig['EBPEntNo'], //电商平台代码
-                'eCommerceCode'           => $declareConfig['EBEntNo'], //电商企业代码
-                'eCommerceName'           => $declareConfig['EBEntName'], //电商企业名称
-                'logisCompanyName'        => $order_data['LogisCompanyName'], //物流企业名称
-                'logisCompanyCode'        => $order_data['LogisCompanyCode'], //物流企业代码
-                'orderNo'                 => $order_data['EntOrderNo'], //订单编号
+                'declareCompanyType'      => $declareConfig['declareCompanyType'], //申报单位类别
+                'declareCompanyCode'      => $declareConfig['declareCompanyCode'], //申报企业代码
+                'declareCompanyName'      => $declareConfig['declareCompanyName'], //申报企业名称
+                'companyName'             => $declareConfig['companyName'], //电商平台名称
+                'companyCode'             => $declareConfig['companyCode'], //电商平台代码
+                'eCommerceCode'           => $declareConfig['eCommerceCode'], //电商企业代码
+                'eCommerceName'           => $declareConfig['eCommerceName'], //电商企业名称
+                'logisCompanyName'        => $order_data['logisCompanyName'], //物流企业名称
+                'logisCompanyCode'        => $order_data['logisCompanyCode'], //物流企业代码
+                'orderNo'                 => $order_data['orderNo'], //订单编号
                 'wayBill'                 => $order_data['wayBill'], //物流运单编号
                 'billNo'                  => $order_data['billNo'], //提运单号，非必
                 'tradeCountry'            => $order_data['tradeCountry'], //启运国（地区）
@@ -109,10 +107,10 @@ class Client extends BaseClient
                 'senderCountry'           => $order_data['senderCountry'], //发件人国别
                 'senderCity'              => isset($order_data['senderCity']) ? $order_data['senderCity'] : '', //发件人城市，非必
                 'paperType'               => '1', //收件人证件类型，非必
-                'paperNumber'             => $order_data['senderCountry'], //收件人证件号，非必
+                'paperNumber'             => $order_data['paperNumber'], //收件人证件号，非必
                 'consigneeAddress'        => $order_data['consigneeAddress'], //收件人地址
                 'purchaserTelNumber'      => $order_data['purchaserTelNumber'], //购买人电话
-                'buyerIdType'             => $order_data['buyerIdType'], //订购人证件类型
+                'buyerIdType'             => 1, //订购人证件类型
                 'buyerIdNumber'           => $order_data['buyerIdNumber'], //订购人证件号码
                 'buyerName'               => $order_data['buyerName'], //订购人姓名
                 'worth'                   => $order_data['worth'], //价值
@@ -120,9 +118,9 @@ class Client extends BaseClient
                 'insureAmount'            => $order_data['insureAmount'], //保费
                 'currCode'                => $order_data['currency'], //币制
                 'mainGName'               => $order_data['mainGName'], //主要货物名称
-                'internalAreaCompanyNo'   => $declareConfig['AreaEntNo'], //区内企业代码，非必
-                'internalAreaCompanyName' => $declareConfig['AreaEntName'], //区内企业名称，非必
-                'assureCode'              => $declareConfig['AssureCode'], //担保企业编号
+                'internalAreaCompanyNo'   => $declareConfig['internalAreaCompanyNo'], //区内企业代码，非必
+                'internalAreaCompanyName' => $declareConfig['internalAreaCompanyName'], //区内企业名称，非必
+                'assureCode'              => $declareConfig['assureCode'], //担保企业编号
                 'applicationFormNo'       => '', //申请单编号，非必
                 'isAuthorize'             => '1', //是否授权
                 'licenseNo'               => '', //许可证号，非必
@@ -139,20 +137,20 @@ class Client extends BaseClient
 
                 $goodsListEle = [
                     'goodsOrder'       => $kk + 1,
-                    'codeTs'           => $vv['SKU'],
+                    'codeTs'           => $vv['codeTs'],
                     'goodsItemNo'      => $vv['goodsItemNo'], //企业商品货号,金二账册必填
                     'itemRecordNo'     => $vv['itemRecordNo'], //账册备案料号,保税必填
                     'itemName'         => $vv['itemName'], //企业商品品名,非必
-                    'goodsName'        => $vv['GoodsName'], //商品名称
-                    'goodsModel'       => $vv['GoodsStyle'], //商品规格型号
-                    'originCountry'    => $vv['OriginCountry'], //原产国（地区）
-                    'tradeCurr'        => $vv['currency'], //币制
+                    'goodsName'        => $vv['goodsName'], //商品名称
+                    'goodsModel'       => $vv['goodsModel'], //商品规格型号
+                    'originCountry'    => $vv['originCountry'], //原产国（地区）
+                    'tradeCurr'        => $vv['tradeCurr'], //币制
                     'tradeTotal'       => $vv['tradeTotal'], //成交总价，非必
-                    'declPrice'        => $vv['RegPrice'], //单价
+                    'declPrice'        => $vv['declPrice'], //单价
                     'declTotalPrice'   => $vv['declTotalPrice'], //总价,申报数量乘以申报单价
-                    'useTo'            => '', //用途，非必
-                    'declareCount'     => $vv['GoodsNumber'], //数量
-                    'goodsUnit'        => $vv['GUnit'], //计量单位
+                    'useTo'            => $vv['useTo'], //用途，非必
+                    'declareCount'     => $vv['declareCount'], //数量
+                    'goodsUnit'        => $vv['goodsUnit'], //计量单位
                     'goodsGrossWeight' => $vv['goodsGrossWeight'], //商品毛重，非必
                     'firstUnit'        => $vv['firstUnit'], //法定计量单位
                     'firstCount'       => $vv['firstCount'], //法定数量
@@ -161,9 +159,12 @@ class Client extends BaseClient
                     'productRecordNo'  => $vv['productRecordNo'], //产品国检备案编号，非必
                     'webSite'          => $vv['webSite'], //商品网址，非必
                     'barCode'          => $vv['barCode'], //条形码，非必
-                    'note'             => '',
                     'tradeCountry'     => $vv['tradeCountry'], //贸易国
+                    'note'             => '',
                 ];
+                //检查订单头参数
+                $this->checkHead($goodsDeclareData);
+
                 $this->dom = $this->createEle($goodsListEle, $this->dom, $goodsDeclareDetail);
             }
         }
@@ -179,20 +180,20 @@ class Client extends BaseClient
     private function checkDeclareConfig($declareConfig)
     {
         $rules = [
-            'OpType'              => 'require|max:1',
-            'EBPEntNo'            => 'require|max:20', //电商平台在跨境电商综合服务平台的备案名称
-            'EBPEntName'          => 'require|max:200', //电商平台在跨境电商综合服务的备案编号
-            'EBEntNo'             => 'require|max:60', //电商企业编码
-            'EBEntName'           => 'require|max:200', //电商企业名称
+            'declareType'         => 'require|max:1',
+            'companyCode'         => 'require|max:20', //电商平台在跨境电商综合服务平台的备案名称
+            'companyName'         => 'require|max:200', //电商平台在跨境电商综合服务的备案编号
+            'eCommerceCode'       => 'require|max:60', //电商企业编码
+            'eCommerceName'       => 'require|max:200', //电商企业名称
             'iePort'              => 'require|max:5',
             'declPort'            => 'require|max:5',
             'importType'          => 'require|max:1',
-            'DeclareCompanyType'  => 'require|max:30',
-            'DeclEntNo'           => 'require|max:20',
-            'DeclEntName'         => 'require|max:200',
+            'declareCompanyType'  => 'require|max:30',
+            'declareCompanyCode'  => 'require|max:20',
+            'declareCompanyName'  => 'require|max:200',
             'enteringPerson'      => 'require|max:20',
             'enteringCompanyName' => 'require|max:30',
-            'AssureCode'          => 'require|max:50',
+            'assureCode'          => 'require|max:50',
         ];
 
         if (!$this->credentialValidate->check($declareConfig, $rules)) {
@@ -208,46 +209,42 @@ class Client extends BaseClient
     private function checkHead($head)
     {
         $rules = [
-            'preEntryNumber'          => 'require|max:18',
-            'inOutDateStr'            => 'require',
-            'destinationPort'         => 'require|max:5',
-            'trafName'                => 'max:100',
-            'voyageNo'                => 'max:32',
-            'trafNo'                  => 'max:100',
-            'trafMode'                => 'require|max:30',
-            'LogisCompanyName'        => 'require|max:200',
-            'LogisCompanyCode'        => 'require|max:20',
-            'orderNo'                 => 'require|max:50',
-            'wayBill'                 => 'require|max:50',
-            'billNo'                  => 'max:37',
-            'tradeCountry'            => 'require|max:20',
-            'packNo'                  => 'require|number',
-            'grossWeight'             => 'require|number',
-            'netWeight'               => 'require|number',
-            'warpType'                => 'max:20',
-            'remark'                  => 'max:200',
-            'declarantNo'             => 'max:20',
-            'customsField'            => 'require|max:20',
-            'senderName'              => 'require|max:20',
-            'consignee'               => 'require|max:20',
-            'senderCountry'           => 'require|max:20',
-            'senderCity'              => 'max:20',
-            'paperType'               => 'max:1',
-            'paperNumber'             => 'max:50',
-            'consigneeAddress'        => 'require|max:255',
-            'purchaserTelNumber'      => 'require|max:30',
-            'buyerIdType'             => 'require|max:1',
-            'buyerIdNumber'           => 'require|max:60',
-            'buyerName'               => 'require|max:60',
-            'worth'                   => 'require|number',
-            'feeAmount'               => 'require|number',
-            'insureAmount'            => 'require|number',
-            'currCode'                => 'require|max:18',
-            'mainGName'               => 'require|max:255',
-            'internalAreaCompanyNo'   => 'max:50',
-            'internalAreaCompanyName' => 'max:200',
-            'applicationFormNo'       => 'max:30',
-            'isAuthorize'             => 'require|max:1',
+            'preEntryNumber'     => 'require|max:18',
+            'inOutDateStr'       => 'require',
+            'destinationPort'    => 'require|max:5',
+            'trafName'           => 'max:100',
+            'voyageNo'           => 'max:32',
+            'trafNo'             => 'max:100',
+            'trafMode'           => 'require|max:30',
+            'logisCompanyName'   => 'require|max:200',
+            'logisCompanyCode'   => 'require|max:20',
+            'orderNo'            => 'require|max:50',
+            'wayBill'            => 'require|max:50',
+            'billNo'             => 'max:37',
+            'tradeCountry'       => 'require|max:20',
+            'packNo'             => 'require|number',
+            'grossWeight'        => 'require|number',
+            'netWeight'          => 'require|number',
+            'warpType'           => 'max:20',
+            'remark'             => 'max:200',
+            'declarantNo'        => 'max:20',
+            'customsField'       => 'require|max:20',
+            'senderName'         => 'require|max:20',
+            'consignee'          => 'require|max:20',
+            'senderCountry'      => 'require|max:20',
+            'senderCity'         => 'max:20',
+            'paperType'          => 'max:1',
+            'paperNumber'        => 'max:50',
+            'consigneeAddress'   => 'require|max:255',
+            'purchaserTelNumber' => 'require|max:30',
+            'buyerIdType'        => 'require|max:1',
+            'buyerIdNumber'      => 'require|max:60',
+            'buyerName'          => 'require|max:60',
+            'worth'              => 'require|number',
+            'feeAmount'          => 'require|number',
+            'insureAmount'       => 'require|number',
+            'currCode'           => 'require|max:18',
+            'mainGName'          => 'require|max:255',
         ];
 
         if (!$this->credentialValidate->check($head, $rules)) {

@@ -47,11 +47,6 @@ class Client extends BaseClient
             $order_data = $declareItem['order_info'];
             $goods_data = $declareItem['goods_info'];
 
-            //检查订单头参数
-            $this->checkHead($order_data);
-            //检查购买者参数
-            $this->checkPurchaser($order_data);
-
             $orderInfo = $this->dom->createElement('orderInfo');
             $orderInfoList->appendchild($orderInfo);
 
@@ -59,10 +54,10 @@ class Client extends BaseClient
             $orderInfo->appendchild($jkfSign);
 
             $jkfSignData = [
-                'companyCode'  => $declareConfig['EBPEntNo'],
+                'companyCode'  => $declareConfig['companyCode'],
                 'businessNo'   => $order_data['businessNo'],
                 'businessType' => $this->businessType,
-                'declareType'  => $declareConfig['OpType'],
+                'declareType'  => $declareConfig['declareType'],
                 'cebFlag'      => '03',
                 'note'         => '',
             ];
@@ -73,38 +68,39 @@ class Client extends BaseClient
             $orderInfo->appendchild($jkfOrderImportHead);
 
             $jkfOrderImportHeadData = [
-                'companyCode'      => $declareConfig['EBPEntNo'],
-                'companyName'      => $declareConfig['EBPEntName'],
-                'eCommerceCode'    => $declareConfig['EBEntNo'], //电商企业编号
-                'eCommerceName'    => $declareConfig['EBEntName'], //电商企业名称
+                'companyCode'      => $declareConfig['companyCode'],
+                'companyName'      => $declareConfig['companyName'],
+                'eCommerceCode'    => $declareConfig['eCommerceCode'], //电商企业编号
+                'eCommerceName'    => $declareConfig['eCommerceName'], //电商企业名称
                 'ieFlag'           => 'I',
                 'payType'          => $order_data['payType'], //01:银行卡支付 02:余额支付 03:其他
                 'payCompanyCode'   => $order_data['payCompanyCode'],
                 'payCompanyName'   => $order_data['payCompanyName'],
                 'payNumber'        => $order_data['payNumber'],
                 'orderTotalAmount' => $order_data['orderTotalAmount'],
-                'orderGoodsAmount' => $order_data['OrderGoodTotal'],
-                'discount'         => $order_data['OtherPayment'],
-                'orderNo'          => $order_data['EntOrderNo'],
-                'orderTaxAmount'   => $order_data['Tax'],
-                'feeAmount'        => isset($order_data['Freight']) ? $order_data['Freight'] : 0,
+                'orderGoodsAmount' => $order_data['orderGoodsAmount'],
+                'discount'         => $order_data['discount'],
+                'orderNo'          => $order_data['orderNo'],
+                'orderTaxAmount'   => $order_data['orderTaxAmount'],
+                'feeAmount'        => isset($order_data['feeAmount']) ? $order_data['feeAmount'] : 0,
                 'insureAmount'     => $order_data['insureAmount'],
                 'tradeTime'        => date('Y-m-d H:i:s', $order_data['tradeTime']),
-                'currCode'         => $order_data['currency'],
-                'totalAmount'      => $order_data['ActualAmountPaid'],
-                'consigneeEmail'   => '', //非必
-                'consigneeTel'     => $order_data['RecipientTel'],
-                'consignee'        => $order_data['RecipientName'],
-                'consigneeAddress' => $order_data['RecipientAddr'],
+                'currCode'         => $order_data['currCode'],
+                'totalAmount'      => $order_data['totalAmount'],
+                //收件人信息
+                'consigneeEmail'   => $order_data['consigneeEmail'], //非必
+                'consigneeTel'     => $order_data['consigneeTel'],
+                'consignee'        => $order_data['consignee'],
+                'consigneeAddress' => $order_data['consigneeAddress'],
+                'consigneeDitrict' => $order_data['consigneeDitrict'], //非必
                 'totalCount'       => $order_data['totalCount'],
-                'batchNumbers'     => '', //非必
-                'consigneeDitrict' => '', //非必
-                'postMode'         => '', //非必
+                'batchNumbers'     => $order_data['batchNumbers'], //非必
+                'postMode'         => $order_data['postMode'], //非必
                 'senderCountry'    => $order_data['senderCountry'], //发件人国别
                 'senderName'       => $order_data['senderName'], //发件人姓名
-                'purchaserId'      => $order_data['OrderDocAcount'], //购买人ID
-                'logisCompanyName' => $order_data['LogisCompanyName'], //物流企业名称
-                'logisCompanyCode' => $order_data['LogisCompanyCode'], //物流企业编号
+                'purchaserId'      => $order_data['purchaserId'], //购买人ID
+                'logisCompanyName' => $order_data['logisCompanyName'], //物流企业名称
+                'logisCompanyCode' => $order_data['logisCompanyCode'], //物流企业编号
                 'zipCode'          => '', //非必
                 'note'             => '', //非必
                 'wayBills'         => '', //非必
@@ -123,17 +119,17 @@ class Client extends BaseClient
 
                 $goodsListEle = [
                     'goodsOrder'    => $kk + 1,
-                    'goodsName'     => $vv['GoodsName'],
-                    'codeTs'        => $vv['SKU'],
-                    'goodsModel'    => $vv['GoodsStyle'],
-                    'originCountry' => $vv['OriginCountry'],
-                    'unitPrice'     => $vv['RegPrice'],
+                    'goodsName'     => $vv['goodsName'],
+                    'codeTs'        => $vv['codeTs'],
+                    'goodsModel'    => $vv['goodsModel'],
+                    'originCountry' => $vv['originCountry'],
+                    'unitPrice'     => $vv['unitPrice'],
                     'currency'      => $vv['currency'],
-                    'goodsCount'    => $vv['GoodsNumber'],
-                    'goodsUnit'     => $vv['GUnit'],
-                    'grossWeight'   => '', //非必
-                    'barCode'       => $vv['BarCode'], //非必
-                    'note'          => '', //非必
+                    'goodsCount'    => $vv['goodsCount'],
+                    'goodsUnit'     => $vv['goodsUnit'],
+                    'grossWeight'   => $vv['grossWeight'], //非必
+                    'barCode'       => $vv['barCode'], //非必
+                    'note'          => '',
                 ];
                 $this->dom = $this->createEle($goodsListEle, $this->dom, $jkfOrderDetail);
             }
@@ -142,14 +138,19 @@ class Client extends BaseClient
             $orderInfo->appendchild($jkfGoodsPurchaser);
 
             $jkfGoodsPurchaserData = [
-                'id'          => $order_data['OrderDocAcount'],
-                'name'        => $order_data['OrderDocName'],
-                'email'       => '', //非必
-                'telNumber'   => $order_data['OrderDocTel'],
+                'id'          => $order_data['id'],
+                'name'        => $order_data['name'],
+                'email'       => $order_data['email'], //非必
+                'telNumber'   => $order_data['telNumber'],
                 'paperType'   => '01',
-                'paperNumber' => $order_data['OrderDocId'],
-                'address'     => '', //非必
+                'paperNumber' => $order_data['paperNumber'],
+                'address'     => $order_data['address'], //非必
             ];
+
+            //检查订单头参数
+            $this->checkHead($jkfOrderImportHeadData);
+            //检查购买者参数
+            $this->checkPurchaser($jkfGoodsPurchaserData);
 
             $this->dom = $this->createEle($jkfGoodsPurchaserData, $this->dom, $jkfGoodsPurchaser);
         }
@@ -165,11 +166,11 @@ class Client extends BaseClient
     private function checkDeclareConfig($declareConfig)
     {
         $rules = [
-            'OpType'     => 'require|max:1',
-            'EBPEntNo'   => 'require|max:20', //电商平台在跨境电商综合服务平台的备案名称
-            'EBPEntName' => 'require|max:200', //电商平台在跨境电商综合服务的备案编号
-            'EBEntNo'    => 'require|max:60', //电商企业编码
-            'EBEntName'  => 'require|max:200', //电商企业名称
+            'declareType'   => 'require|max:1',
+            'companyCode'   => 'require|max:20', //电商平台在跨境电商综合服务平台的备案名称
+            'companyName'   => 'require|max:200', //电商平台在跨境电商综合服务的备案编号
+            'eCommerceNo'   => 'require|max:60', //电商企业编码
+            'eCommerceName' => 'require|max:200', //电商企业名称
         ];
 
         if (!$this->credentialValidate->check($declareConfig, $rules)) {
@@ -185,28 +186,27 @@ class Client extends BaseClient
     private function checkHead($head)
     {
         $rules = [
-                'payType'          => 'require|max:2',
-                'payCompanyCode'   => 'require|max:50',
-                'payCompanyName'   => 'require|max:50',
-                'payNumber'        => 'require|max:60',
-                'ActualAmountPaid' => 'require',
-                'EntOrderNo'       => 'require|max:60',
-                'Tax'              => 'require',
-                'OrderGoodTotal'   => 'require',
-                'insureAmount'     => 'require',
-                'tradeTime'        => 'require|max:25',
-                'currency'         => 'require|max:3',
-                'RecipientTel'     => 'require|max:60',
-                'RecipientName'    => 'require|max:60',
-                'RecipientAddr'    => 'require|max:255',
-                'totalCount'       => 'require',
-                'senderCountry'    => 'require|max:3',
-                'senderName'       => 'require|max:200',
-                'OrderDocAcount'   => 'require|max:100',
-                'LogisCompanyName' => 'require|max:200',
-                'LogisCompanyCode' => 'require|max:20',
-                'OtherPayment'     => 'require',
-            ];
+            'payType'          => 'require|max:2',
+            'payCompanyCode'   => 'require|max:50',
+            'payCompanyName'   => 'max:50',
+            'payNumber'        => 'require|max:60',
+            'orderNo'          => 'require|max:60',
+            'orderTaxAmount'   => 'require|number',
+            'orderGoodsAmount' => 'require|number',
+            'insureAmount'     => 'require|number',
+            'tradeTime'        => 'require|max:25',
+            'currency'         => 'require|max:3',
+            'consigneeTel'     => 'require|max:60',
+            'consignee'        => 'require|max:60',
+            'consigneeAddress' => 'require|max:255',
+            'totalCount'       => 'require|number',
+            'senderCountry'    => 'require|max:3',
+            'senderName'       => 'require|max:200',
+            'purchaserId'      => 'require|max:100',
+            'logisCompanyName' => 'require|max:200',
+            'logisCompanyCode' => 'require|max:20',
+            'discount'         => 'require|number',
+        ];
 
         if (!$this->credentialValidate->check($head, $rules)) {
             throw new ClientError('报文传输配置' . $this->credentialValidate->getError());
@@ -221,11 +221,11 @@ class Client extends BaseClient
     private function checkPurchaser($purchaser)
     {
         $rules = [
-                'OrderDocAcount' => 'require|max:100',
-                'OrderDocName'   => 'require|max:100',
-                'OrderDocTel'    => 'require|max:30',
-                'OrderDocId'     => 'require|max:100',
-            ];
+            'purchaserId' => 'require|max:100',
+            'name'        => 'require|max:100',
+            'telNumber'   => 'require|max:30',
+            'paperNumber' => 'require|max:100',
+        ];
 
         if (!$this->credentialValidate->check($purchaser, $rules)) {
             throw new ClientError('报文传输配置' . $this->credentialValidate->getError());
