@@ -275,16 +275,16 @@ class Client extends BaseClient
 
             'ceb:country' => 'require',
             'ceb:POD'     => 'require',
-            'ceb:freight' => 'require|number',
+            'ceb:freight' => 'require|float',
 
             'ceb:fFlag'      => 'require|max:1',
-            'ceb:insuredFee' => 'require|number',
+            'ceb:insuredFee' => 'require|float',
 
             'ceb:iFlag'       => 'require|max:1',
             'ceb:wrapType'    => 'require|max:1',
-            'ceb:packNo'      => 'require|number',
-            'ceb:grossWeight' => 'require|number',
-            'ceb:netWeight'   => 'require|number',
+            'ceb:packNo'      => 'require|integer',
+            'ceb:grossWeight' => 'require|float',
+            'ceb:netWeight'   => 'require|float',
         ];
 
         $list_rules = [
@@ -298,14 +298,14 @@ class Client extends BaseClient
             'ceb:barCode' => 'require|max:50',
             'ceb:country' => 'require|max:3',
 
-            'ceb:qty'  => 'require|number',
-            'ceb:qty1' => 'require|number',
+            'ceb:qty'  => 'require|float',
+            'ceb:qty1' => 'require|float',
 
             'ceb:unit'  => 'require|max:3',
             'ceb:unit1' => 'require|max:3',
 
-            'ceb:price'      => 'require|number',
-            'ceb:totalPrice' => 'require|number',
+            'ceb:price'      => 'require|float',
+            'ceb:totalPrice' => 'require|float',
         ];
 
         //根据贸易模型选择配置

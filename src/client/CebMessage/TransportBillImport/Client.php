@@ -128,11 +128,11 @@ class Client extends BaseClient
             'ceb:logisticsName' => 'require',
             'ceb:logisticsNo'   => 'require|max:60',
 
-            'ceb:freight'    => 'require|number',
-            'ceb:insuredFee' => 'require|number',
+            'ceb:freight'    => 'require|float',
+            'ceb:insuredFee' => 'require|float',
             'ceb:currency'   => 'require',
-            'ceb:weight'     => 'require|number',
-            'ceb:packNo'     => 'require|number',
+            'ceb:weight'     => 'require|float',
+            'ceb:packNo'     => 'require|integer',
 
             'ceb:consignee'          => 'require|max:100',
             'ceb:consigneeAddress'   => 'require',

@@ -36,12 +36,12 @@ class JxCrossImportService
      * @throws ClientError
      * @throws \Exception
      */
-    public function generateOrderXmlPost(array $declareConfig, array $declareParams)
+    public function generateXmlPost(array $declareConfig, array $declareParams)
     {
         if (empty($declareConfig) || empty($declareParams)) {
             throw new ClientError('参数缺失', 1000001);
         }
-        return $this->_jxImportOrderClient->generateOrderXmlPost($declareConfig, $declareParams);
+        return $this->_jxImportOrderClient->generateXmlPost($declareConfig, $declareParams);
     }
     
 }

@@ -157,15 +157,15 @@ class Client extends BaseClient
             'ceb:trafName'      => 'require|max:100',
             'ceb:voyageNo'      => 'require|max:32',
             'ceb:billNo'        => 'require|max:37',
-            'ceb:grossWeight'   => 'require|number',
+            'ceb:grossWeight'   => 'require|float',
             'ceb:logisticsCode' => 'require|max:18',
             'ceb:logisticsName' => 'require|max:100',
-            'ceb:msgCount'      => 'require|number',
-            'ceb:msgSeqNo'      => 'require|number',
+            'ceb:msgCount'      => 'require|integer',
+            'ceb:msgSeqNo'      => 'require|integer',
         ];
 
         $list_rules = [
-            'ceb:gnum'        => 'require|number',
+            'ceb:gnum'        => 'require|integer',
             'ceb:logisticsNo' => 'require|max:80',
         ];
 

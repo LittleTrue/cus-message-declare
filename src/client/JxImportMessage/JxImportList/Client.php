@@ -33,7 +33,7 @@ class Client extends BaseClient
      *
      * @throws ClientError
      */
-    public function generateListXmlPost(array $declareConfig, array $declareParams)
+    public function generateXmlPost(array $declareConfig, array $declareParams)
     {
         //检查申报签名参数
         $this->checkDeclareConfig($declareConfig);
@@ -44,8 +44,8 @@ class Client extends BaseClient
         $this->nodeLink['body']->appendchild($goodsDeclareModuleList);
 
         foreach ($declareParams as $key => $declareItem) {
-            $order_data = $declareParams['order_info'];
-            $goods_data = $declareParams['goods_info'];
+            $order_data = $declareItem['order_info'];
+            $goods_data = $declareItem['goods_info'];
 
             $goodsDeclareModule = $this->dom->createElement('goodsDeclareModule');
             $goodsDeclareModuleList->appendchild($goodsDeclareModule);
@@ -75,9 +75,9 @@ class Client extends BaseClient
                 'inOutDateStr'            => date('Y-m-d H:i:s', $order_data['inOutDateStr']),
                 'iePort'                  => $declareConfig['iePort'], //口岸代码表
                 'destinationPort'         => $order_data['destinationPort'],
-                'trafName'                => $order_data['trafName'], //运输工具名称，非必
-                'voyageNo'                => $order_data['voyageNo'], //航班航次号，非必
-                'trafNo'                  => $order_data['trafNo'], //运输工具编号，非必
+                'trafName'                => isset($order_data['trafName']) ? $order_data['trafName'] : '', //运输工具名称，非必
+                'voyageNo'                => isset($order_data['voyageNo']) ? $order_data['voyageNo'] : '', //航班航次号，非必
+                'trafNo'                  => isset($order_data['trafNo']) ? $order_data['trafNo'] : '', //运输工具编号，非必
                 'trafMode'                => $order_data['trafMode'], //运输方式
                 'declareCompanyType'      => $declareConfig['declareCompanyType'], //申报单位类别
                 'declareCompanyCode'      => $declareConfig['declareCompanyCode'], //申报企业代码
@@ -90,7 +90,7 @@ class Client extends BaseClient
                 'logisCompanyCode'        => $order_data['logisCompanyCode'], //物流企业代码
                 'orderNo'                 => $order_data['orderNo'], //订单编号
                 'wayBill'                 => $order_data['wayBill'], //物流运单编号
-                'billNo'                  => $order_data['billNo'], //提运单号，非必
+                'billNo'                  => isset($order_data['billNo']) ? $order_data['billNo'] : '', //提运单号，非必
                 'tradeCountry'            => $order_data['tradeCountry'], //启运国（地区）
                 'packNo'                  => $order_data['packNo'], //件数
                 'grossWeight'             => $order_data['grossWeight'], //毛重（公斤）
@@ -107,7 +107,7 @@ class Client extends BaseClient
                 'senderCountry'           => $order_data['senderCountry'], //发件人国别
                 'senderCity'              => isset($order_data['senderCity']) ? $order_data['senderCity'] : '', //发件人城市，非必
                 'paperType'               => '1', //收件人证件类型，非必
-                'paperNumber'             => $order_data['paperNumber'], //收件人证件号，非必
+                'paperNumber'             => isset($order_data['paperNumber']) ? $order_data['paperNumber'] : '', //收件人证件号，非必
                 'consigneeAddress'        => $order_data['consigneeAddress'], //收件人地址
                 'purchaserTelNumber'      => $order_data['purchaserTelNumber'], //购买人电话
                 'buyerIdType'             => 1, //订购人证件类型
@@ -138,27 +138,27 @@ class Client extends BaseClient
                 $goodsListEle = [
                     'goodsOrder'       => $kk + 1,
                     'codeTs'           => $vv['codeTs'],
-                    'goodsItemNo'      => $vv['goodsItemNo'], //企业商品货号,金二账册必填
-                    'itemRecordNo'     => $vv['itemRecordNo'], //账册备案料号,保税必填
-                    'itemName'         => $vv['itemName'], //企业商品品名,非必
+                    'goodsItemNo'      => isset($vv['goodsItemNo']) ? $vv['goodsItemNo'] : '', //企业商品货号,金二账册必填
+                    'itemRecordNo'     => isset($vv['itemRecordNo']) ? $vv['itemRecordNo'] : '', //账册备案料号,保税必填
+                    'itemName'         => isset($vv['itemName']) ? $vv['itemName'] : '', //企业商品品名,非必
                     'goodsName'        => $vv['goodsName'], //商品名称
                     'goodsModel'       => $vv['goodsModel'], //商品规格型号
                     'originCountry'    => $vv['originCountry'], //原产国（地区）
                     'tradeCurr'        => $vv['tradeCurr'], //币制
-                    'tradeTotal'       => $vv['tradeTotal'], //成交总价，非必
+                    'tradeTotal'       => isset($vv['tradeTotal']) ? $vv['tradeTotal'] : '', //成交总价，非必
                     'declPrice'        => $vv['declPrice'], //单价
                     'declTotalPrice'   => $vv['declTotalPrice'], //总价,申报数量乘以申报单价
-                    'useTo'            => $vv['useTo'], //用途，非必
+                    'useTo'            => isset($vv['useTo']) ? $vv['useTo'] : '', //用途，非必
                     'declareCount'     => $vv['declareCount'], //数量
                     'goodsUnit'        => $vv['goodsUnit'], //计量单位
-                    'goodsGrossWeight' => $vv['goodsGrossWeight'], //商品毛重，非必
+                    'goodsGrossWeight' => isset($vv['goodsGrossWeight']) ? $vv['goodsGrossWeight'] : '', //商品毛重，非必
                     'firstUnit'        => $vv['firstUnit'], //法定计量单位
                     'firstCount'       => $vv['firstCount'], //法定数量
-                    'secondUnit'       => $vv['secondUnit'], //第二计量单位，非必
-                    'secondCount'      => $vv['secondCount'], //第二数量，非必
+                    'secondUnit'       => isset($vv['secondUnit']) ? $vv['secondUnit'] : '', //第二计量单位，非必
+                    'secondCount'      => isset($vv['secondCount']) ? $vv['secondCount'] : '', //第二数量，非必
                     'productRecordNo'  => $vv['productRecordNo'], //产品国检备案编号，非必
-                    'webSite'          => $vv['webSite'], //商品网址，非必
-                    'barCode'          => $vv['barCode'], //条形码，非必
+                    'webSite'          => isset($vv['webSite']) ? $vv['webSite'] : '', //商品网址，非必
+                    'barCode'          => isset($vv['barCode']) ? $vv['barCode'] : '', //商品网址，非必
                     'tradeCountry'     => $vv['tradeCountry'], //贸易国
                     'note'             => '',
                 ];
@@ -222,9 +222,9 @@ class Client extends BaseClient
             'wayBill'            => 'require|max:50',
             'billNo'             => 'max:37',
             'tradeCountry'       => 'require|max:20',
-            'packNo'             => 'require|number',
-            'grossWeight'        => 'require|number',
-            'netWeight'          => 'require|number',
+            'packNo'             => 'require|float',
+            'grossWeight'        => 'require|float',
+            'netWeight'          => 'require|float',
             'warpType'           => 'max:20',
             'remark'             => 'max:200',
             'declarantNo'        => 'max:20',
@@ -240,9 +240,9 @@ class Client extends BaseClient
             'buyerIdType'        => 'require|max:1',
             'buyerIdNumber'      => 'require|max:60',
             'buyerName'          => 'require|max:60',
-            'worth'              => 'require|number',
-            'feeAmount'          => 'require|number',
-            'insureAmount'       => 'require|number',
+            'worth'              => 'require|float',
+            'feeAmount'          => 'require|float',
+            'insureAmount'       => 'require|float',
             'currCode'           => 'require|max:18',
             'mainGName'          => 'require|max:255',
         ];

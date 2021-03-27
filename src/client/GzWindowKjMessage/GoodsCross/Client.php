@@ -189,17 +189,17 @@ class Client extends BaseClient
             'GoodsName'      => 'require|max:255',
             'GoodsStyle'     => 'require|max:255',
             'Brand'          => 'require|max:50',
-            'GUnit'          => 'require|number|max:3',
-            'StdUnit'        => 'require|number|max:3',
+            'GUnit'          => 'require|integer|max:3',
+            'StdUnit'        => 'require|integer|max:3',
             'SecUnit'        => 'max:3',
-            'RegPrice'       => 'require|number',
-            'GiftFlag'       => 'require|number|max:1',
+            'RegPrice'       => 'require|float',
+            'GiftFlag'       => 'require|integer|max:1',
             'OriginCountry'  => 'require|number|max:3',
             'Quality'        => 'require|max:100',
             'QualityCertify' => 'max:100',
             'Manufactory'    => 'require|max:255',
-            'NetWt'          => 'require|number',
-            'GrossWt'        => 'require|number',
+            'NetWt'          => 'require|float',
+            'GrossWt'        => 'require|float',
         ]);
 
         if (!$this->credentialValidate->check($data)) {
