@@ -169,7 +169,7 @@ class Client extends BaseClient
             'declareType'   => 'require|max:1',
             'companyCode'   => 'require|max:20', //电商平台在跨境电商综合服务平台的备案名称
             'companyName'   => 'require|max:200', //电商平台在跨境电商综合服务的备案编号
-            'eCompanyCode'  => 'require|max:60', //电商企业编码
+            'eCommerceCode'  => 'require|max:60', //电商企业编码
             'eCommerceName' => 'require|max:200', //电商企业名称
         ];
 
