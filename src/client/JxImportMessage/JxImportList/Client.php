@@ -126,7 +126,7 @@ class Client extends BaseClient
                 'licenseNo'               => '', //许可证号，非必
             ];
 
-            $this->createEle($goodsDeclareData, $this->dom, $goodsDeclareModule);
+            $this->createEle($goodsDeclareData, $this->dom, $goodsDeclare);
 
             $goodsDeclareDetails = $this->dom->createElement('goodsDeclareDetails');
             $goodsDeclareModule->appendchild($goodsDeclareDetails);
