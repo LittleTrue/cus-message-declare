@@ -89,6 +89,7 @@ class Client extends BaseClient
             'language'          => 'zh-CN',
             'orderId'           => $declareParams['orderId'],
             'monthlyCard'       => $declareConfig['monthly_card'],
+            'expressTypeId'     => 2, // 1特快 2标快(默认)
         ];
 
         // 收件，寄件方信息
