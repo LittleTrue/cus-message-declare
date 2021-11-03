@@ -14,7 +14,8 @@ class Application extends Container
      * @var array
      */
     protected $providers = [
-        Base\ServiceProvider::class,
+        Base\ServiceProvider::class, //基础服务
+        SignMessage\Rsa\ServiceProvider::class, //RSA加签服务
         CebMessage\ChecklistCrossImport\ServiceProvider::class,
         CebMessage\OrderCrossImport\ServiceProvider::class,
         CebMessage\PayReceiveCrossExport\ServiceProvider::class,
@@ -24,10 +25,7 @@ class Application extends Container
         CebMessage\DeclareListExport\ServiceProvider::class,
         CebMessage\CancelDeclareExport\ServiceProvider::class,
         CebMessage\DepartureOrderExport\ServiceProvider::class,
-        CebMessage\EmsLogisticsDeclare\ServiceProvider::class,
-        CebMessage\SFLogisticsDeclare\ServiceProvider::class,
         CebMessage\ArrivalExport\ServiceProvider::class,
-        // CebMessage\WayBillExport\ServiceProvider::class,
         CebMessage\SummaryBillExport\ServiceProvider::class,
         CebMessage\TotalDeclareListExport\ServiceProvider::class,
         ChinaWindowMessage\OrderExpressImport\ServiceProvider::class,
@@ -36,7 +34,6 @@ class Application extends Container
         GzWindowKjMessage\InboundCross\ServiceProvider::class,
         GzWindowKjMessage\OrderCross\ServiceProvider::class,
         GzWindowKjMessage\GoodsLoadCross\ServiceProvider::class,
-        SignMessage\Rsa\ServiceProvider::class,
         GzWindowKjMessage\HttpMessageDeclare\ServiceProvider::class,
         JxImportMessage\JxCrossImport\ServiceProvider::class,
         JxImportMessage\JxImportList\ServiceProvider::class,

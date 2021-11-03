@@ -20,13 +20,26 @@
         "pimple/pimple": "v2.1.1",
         "ext-json": "*"
     },
-    "require-dev": {
-    },
     "autoload": {
         "psr-4": {
             "customs\\CustomsDeclareClient\\": "src/client/",
             "customs\\CustomsDeclareService\\": "src/service/",
             "customs\\": "src/"
         }
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.15",
+        "phpunit/phpunit": "^7.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "phpcs": "vendor/bin/php-cs-fixer fix",
+        "check-style": "php-cs-fixer fix --using-cache=no --diff --config=.php_cs --dry-run --ansi",
+        "fix-style": "php-cs-fixer fix --using-cache=no --config=.php_cs --ansi",
+        "test": "vendor/bin/phpunit --colors=always"
     }
 }
